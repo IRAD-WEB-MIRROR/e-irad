@@ -1,0 +1,25 @@
+{
+  "name": "e-Irad",
+  "short_name": "e-Irad",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#e9ecef",
+  "theme_color": "#1f5a96",
+  "icons": [
+    {
+      "src": "/assets/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
