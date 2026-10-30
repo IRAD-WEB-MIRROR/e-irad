@@ -69,7 +69,7 @@
     x: [["home", "/"], ["forms", "/forms.html"], ["status", "/status.html"], ["faq", "/faq.html"], ["contact", "/contact.html"], ["accessibility", "/accessibility.html"], ["login", "/login.html"]]
   };
   var NAVLBL = { people: "catPeople", pay: "catPay", check: "catCheck", accessibility: "footAcc" };
-  var PAGESEC = { landing: "land", business: "b", procedures: "b", procedure: "b", laws: "b", citizens: "c", login: "c", vote: "c", tests: "c", appeals: "c" };
+  var PAGESEC = { landing: "land", business: "b", procedures: "b", procedure: "b", laws: "b", citizens: "c", login: "c", vote: "c", tests: "c", appeals: "c", applications: "c" };
   var CUR = { business: "bhome", citizens: "chome", procedures: "proc", procedure: "proc", laws: "laws", login: "login", status: "status", faq: "faq", forms: "forms", contact: "contact", accessibility: "accessibility" };
   var LANG_ORDER = ["ir", "ru", "en"];
   function secOf(s) { var w = new URLSearchParams(location.search).get("s"); return w && s.sec.indexOf(w) >= 0 ? w : s.sec.charAt(0); }
@@ -584,6 +584,7 @@
   function dateVal(id) { var v = $("#" + id).value; return v ? new Date(v + "T00:00:00Z") : null; }
   function daysTo(d) { return Math.round((d - today()) / 86400000); }
   var C = {
+    dlPilot: { en: "This service is in the online submission pilot: you can submit the form on e-Irad instead of at the counter (see Online submission on this page) and present the originals when you collect the result. Otherwise download the form, complete it in block capitals and bring it, with this reference and the originals, to the counter.", ir: "Bul kızmat onlayn berüü sınoosuna kirgen: formanı kassaga emes, e-Iradda berseñiz bolot (ushul bettegi Onlayn berüü bölümün karañız), asıldardı natıyjanı alganda körsötösüz. Bolboso formanı jüktöp alıp, choñ basma tamgalar menen tolturup, bul nomer jana asıldar menen kassaga alıp keliñiz.", ru: "Эта услуга участвует в пилотном проекте онлайн-подачи: бланк можно подать на e-Irad, а не в окошке (см. «Онлайн-подача» на этой странице), а оригиналы предъявить при получении результата. Иначе скачайте бланк, заполните его печатными буквами и принесите в окошко вместе с этим номером и оригиналами." },
     ref: { en: "Pre-application reference", ir: "Aldın ala arızdın nomeri", ru: "Номер предварительной заявки" },
     bring: { en: "Bring to the counter", ir: "Kassaga ala keliñiz", ru: "Принесите в окошко" },
     dl: { en: "Online submission is not available during the pilot. Download the form, complete it in block capitals and bring it, with this reference and the originals of the documents listed, to the counter. Copies are accepted only together with the originals.", ir: "Sınoo mezgilinde onlayn tapshıruu jok. Formanı jüktöp alıp, choñ basma tamgalar menen tolturuñuz da, bul nomer jana tizmedegi dokumentterdin asıldarı menen kassaga alıp keliñiz. Köchürmölör asılı menen birge gana kabıl alınat.", ru: "В пилотном режиме онлайн-подача недоступна. Скачайте бланк, заполните его печатными буквами и принесите в окошко вместе с этим номером и оригиналами перечисленных документов. Копии принимаются только вместе с оригиналами." },
@@ -602,7 +603,7 @@
     numBad: { en: "Enter the number exactly as it is printed, for example {e}.", ir: "Nomerdi basılganday jazıñız, mısalı: {e}.", ru: "Введите номер точно как напечатано, например {e}." }
   };
   function counterEnd(id, docs, where) {
-    return H4(C.bring) + ul(docs) + (where ? "<p><b>" + esc(L(where)) + "</b></p>" : "") + P(C.dl) + formBox(id);
+    return H4(C.bring) + ul(docs) + (where ? "<p><b>" + esc(L(where)) + "</b></p>" : "") + P(window.E_APPS && window.E_APPS.spec(id) ? C.dlPilot : C.dl) + formBox(id);
   }
   /* state duties (som), shared by every service that names one and by the calculator */
   var DUTY = [
@@ -1683,7 +1684,7 @@
     var sec = secOf(s), SEP = ' <span class="sep">›</span> ';
     main.innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + (sec === "b" ? '<a href="/business.html">' + esc(t("secBiz")) + "</a>" + SEP + '<a href="/business.html#services">' + esc(t("nav_bservices")) + "</a>" : '<a href="/citizens.html">' + esc(t("secCit")) + "</a>" + SEP + '<a href="/citizens.html#cat-' + s.cat + '">' + esc(t("cat" + s.cat.charAt(0).toUpperCase() + s.cat.slice(1))) + "</a>") + SEP + "<span>" + esc(L(s.name)) + "</span></nav>" +
       '<div class="svchead">' + icon(s.icon) + "<div><h1>" + esc(L(s.name)) + "</h1><p>" + esc(L(s.desc)) + '</p><p class="agency"><span>' + esc(t("agency")) + ":</span> " + esc(L(s.agency)) + " " + badge(s.status) + "</p></div></div>" +
-      '<div class="svcgrid"><div id="flowbox"></div><aside class="help">' + (HELP[id] ? L(HELP[id]) : "") + formBox(id) + '<p class="tiny">' + esc(t("offline")) + "</p></aside></div></div>";
+      '<div class="svcgrid"><div id="flowbox"></div><aside class="help">' + (HELP[id] ? L(HELP[id]) : "") + formBox(id) + (window.E_APPS ? window.E_APPS.note(id, L, esc) : "") + '<p class="tiny">' + esc(t("offline")) + "</p></aside></div></div>";
     FLOWS[id]($("#flowbox"));
   }
 
@@ -1799,14 +1800,15 @@
     document.title = t("nfH") + " | e-Irad";
   }
 
-  var X = window.E_EXTRA ? window.E_EXTRA({ $: $, $$: $$, esc: esc, t: t, L: L, fmtN: fmtN, fmtD: fmtD, hash: hash, today: today, iradNow: iradNow, addDays: addDays, norm: norm, field: field, sel: sel, inp: inp, need: need, kv: kv, P: P, H4: H4, ul: ul, opts: opts, pick: pick, refBox: refBox, caps: caps, chk: chk, dateIn: dateIn, pad5: pad5, icon: icon, badge: badge, DISTRICTS: DISTRICTS }) : {};
+  var HX = { $: $, $$: $$, esc: esc, t: t, L: L, fmtN: fmtN, fmtD: fmtD, hash: hash, today: today, iradNow: iradNow, addDays: addDays, norm: norm, field: field, sel: sel, inp: inp, need: need, kv: kv, P: P, H4: H4, ul: ul, opts: opts, pick: pick, refBox: refBox, caps: caps, chk: chk, dateIn: dateIn, pad5: pad5, icon: icon, badge: badge, DISTRICTS: DISTRICTS };
+  var X = window.E_EXTRA ? window.E_EXTRA(HX) : {};
   var G = window.E_GUIDE({ $: $, $$: $$, esc: esc, t: t, L: L, fmtN: fmtN, som: som, fmtD: fmtD, hash: hash, today: today, S: S, card: card, svcHref: svcHref, pageNF: pageNF });
   var TITLES = { status: "nav_status", faq: "faqH", accessibility: "accH", contact: "ctH", login: "loginH" };
   function render() {
     document.documentElement.lang = I.htmlLang[LANG];
     chrome();
     if (TITLES[PAGE]) document.title = t(TITLES[PAGE]) + " | e-Irad";
-    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: X.vote, tests: X.tests, appeals: X.appeals, nf: pageNF }[PAGE] || pageNF)();
+    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: X.vote, tests: X.tests, appeals: X.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
   }
   render();
 })();

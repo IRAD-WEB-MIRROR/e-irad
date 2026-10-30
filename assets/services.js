@@ -305,6 +305,13 @@ window.E_SERVICES = {
       keywords: "appeal letter complaint petition governor kayrıluu daттanuu обращение жалоба письмо"
     },
     {
+      id: "applications", cat: "people", sec: "c", status: "limited", icon: "doc", url: "/applications/",
+      name: { en: "Applications online", ir: "Onlayn arızdar", ru: "Заявления онлайн" },
+      desc: { en: "Submit an application for one of fifteen certificates, licences and permits, and follow it until it is ready to collect.", ir: "On besh maalımkat, kuböölük je uruksattın birine arız berip, anı dayar bolgucha karap turuñuz.", ru: "Подайте заявление на одну из пятнадцати справок, лицензий и разрешений и следите за ним до выдачи." },
+      agency: { en: "e-Government Service Centre, with the receiving bodies", ir: "e-Ökmöt kızmat borboru, kabıl aluuchu organdar menen", ru: "Центр услуг электронного правительства совместно с принимающими органами" },
+      keywords: "application apply online submit track follow status reference pilot arız arızdar заявление подать статус номер"
+    },
+    {
       id: "reception", cat: "other", sec: "c", status: "ok", icon: "mail", url: "/appeals/",
       name: { en: "Online reception", ir: "Onlayn kabıl aluu", ru: "Интернет-приёмная" },
       desc: { en: "Write to the Office of the Governor or a ministry and check what has happened to your appeal.", ir: "Gubernatordun apparatına je ministrlikke jazıp, kayrıluuñuzdun abalın tekshiriñiz.", ru: "Напишите в Аппарат губернатора или министерство и проверьте, что с вашим обращением." },
