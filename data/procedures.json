@@ -3090,7 +3090,7 @@
     }
    ],
    "context": {
-    "en": "Every newspaper, magazine and bulletin published more than once a year, and every website that publishes news, is registered with the Department of Public Information before its first issue, under DPI Regulation No. 12. The founder is a registered firm or association; the certificate is issued for a title, a language and a frequency. Each issue is then delivered to the Department and to the State Archives under the Legal Deposit Act. Registration may be suspended by the Department; a suspended title stays on the register and may not be used by another periodical.",
+    "en": "Every newspaper, magazine and bulletin published more than once a year, and every website that publishes news, is registered with the Department of Public Information before its first issue, under Department of Public Information Regulation No. 12. The founder is a registered firm or association; the certificate is issued for a title, a language and a frequency. Each issue is then delivered to the Department and to the State Archives under the Legal Deposit Act. Registration may be suspended by the Department; a suspended title stays on the register and may not be used by another periodical.",
     "ir": "Jılına bir joludan köp chıguuchu ar bir gazeta, jurnal jana byulleten, jana janılıktardı jarıyalaguuchu ar bir sayt birinchi sanına cheyin KMDnin № 12 jobosu boyuncha Kogomduk maalımat departamentinde kattalat. Uyushturuuchu kattalgan firma je birikme bolot; kübölük atalıshka, tilge jana chıguu merzimine berilet. Andan kiyin ar bir san Mildettüü nuska tuuraluu mıyzam boyuncha departamentke jana Mamlekettik arkhivge tapshırılat. Kattoonu departament toktotushu mümkün; toktotulgan atalısh reestrde kalat jana anı bashka merzimdüü basılma koldono albayt.",
     "ru": "Каждая газета, журнал и бюллетень, выходящие чаще одного раза в год, и каждый сайт, публикующий новости, регистрируются в Департаменте общественной информации до выхода первого номера по Положению ДОИ № 12. Учредителем является зарегистрированная фирма или объединение; свидетельство выдаётся на название, язык и периодичность. Затем каждый номер сдаётся в департамент и в Государственный архив по Закону об обязательном экземпляре. Регистрация может быть приостановлена департаментом; приостановленное название остаётся в реестре и не может использоваться другим изданием."
    },
@@ -8855,7 +8855,7 @@
   "con-dpi": {
    "objective": "event-concert",
    "title": {
-    "en": "Obtain a DPI performance permit for performers from abroad",
+    "en": "Obtain a Department of Public Information performance permit for performers from abroad",
     "ir": "Chet eldik atkaruuchular üchün KMDnin konsert uruksatın aluu",
     "ru": "Получить разрешение ДОИ на выступление зарубежных исполнителей"
    },
@@ -10010,7 +10010,7 @@
     "ru": "Получить разрешение на вывеску"
    },
    "desc": {
-    "en": "Permit of the Architecture and Planning Department; the text of the sign is registered with the DPI as printed matter.",
+    "en": "Permit of the Architecture and Planning Department; the text of the sign is registered with the Department of Public Information as printed matter.",
     "ir": "Arkhitektura jana shaar kurulushu bölümünün uruksatı; jarnamanın teksti KMDde basma buyum katarı kattalat.",
     "ru": "Разрешение Управления архитектуры и градостроительства; текст вывески регистрируется в ДОИ как печатная продукция."
    },
@@ -10024,7 +10024,7 @@
      },
      "inst": "archplan",
      "note": {
-      "en": "The Iradi text must be at least as large as the text in any other language. The DPI registers the sign after the permit, and the permit is valid only with the DPI registration number painted on the sign.",
+      "en": "The Iradi text must be at least as large as the text in any other language. The Department of Public Information registers the sign after the permit, and the permit is valid only with the Department of Public Information registration number painted on the sign.",
       "ir": "Irad tilindegi tekst bashka tildegi tekstten kichine bolboshu kerek. KMD jarnamanı uruksattan kiyin kattayt, uruksat KMD kattoo nomeri jarnamaga jazılganda gana jaraktuu.",
       "ru": "Ирадский текст должен быть не меньше текста на любом другом языке. ДОИ регистрирует вывеску после выдачи разрешения, а разрешение действительно, только если на вывеске нанесён регистрационный номер ДОИ."
      },
@@ -10052,7 +10052,7 @@
     },
     {
      "title": {
-      "en": "Register the sign text at the DPI",
+      "en": "Register the sign text at the Department of Public Information",
       "ir": "Jarnamanın tekstin KMDde kattatuu",
       "ru": "Зарегистрировать текст вывески в ДОИ"
      },
@@ -10184,7 +10184,7 @@
     "ru": "Зарегистрировать публичное воспроизведение музыки"
    },
    "desc": {
-    "en": "Registration with the DPI for cafés with more than twenty seats that play recorded music.",
+    "en": "Registration with the Department of Public Information for cafés with more than twenty seats that play recorded music.",
     "ir": "Jazılgan muzıka oynotkon jıyırmadan ashık orunduu kafeler üchün KMDde kattoo.",
     "ru": "Регистрация в ДОИ для кафе более чем на двадцать мест, где звучит записанная музыка."
    },
@@ -13644,13 +13644,13 @@
     },
     {
      "title": {
-      "en": "Register the text of the plans at the DPI",
+      "en": "Register the text of the plans at the Department of Public Information",
       "ir": "Plandardın tekstin KMDde kattatuu",
       "ru": "Зарегистрировать текст планов в ДОИ"
      },
      "inst": "dpi",
      "note": {
-      "en": "An evacuation plan with words on it is printed matter. The DPI gives one registration number for all the plans of the house, written in the bottom right corner of each plan.",
+      "en": "An evacuation plan with words on it is printed matter. The Department of Public Information gives one registration number for all the plans of the house, written in the bottom right corner of each plan.",
       "ir": "Üstündö sözdörü bar evakuatsiya planı basma buyum bolup eseptelet. KMD üydün bardık plandarına bir kattoo nomerin beret, al ar bir plandın oñ jak astınkı burchuna jazılat.",
       "ru": "План эвакуации, на котором есть слова, является печатной продукцией. ДОИ присваивает один регистрационный номер всем планам дома; он пишется в правом нижнем углу каждого плана."
      },
@@ -15354,7 +15354,7 @@
   "flm-acc": {
    "objective": "event-filming",
    "title": {
-    "en": "Obtain DPI accreditation for the crew",
+    "en": "Obtain Department of Public Information accreditation for the crew",
     "ir": "Top üchün KMDnin akkreditatsiyasın aluu",
     "ru": "Получить аккредитацию группы в ДОИ"
    },
@@ -17570,7 +17570,7 @@
     "ru": "Согласовать крышный фонарь и маркировку"
    },
    "desc": {
-    "en": "Text registered with the DPI, then approval by the Passenger Transport Licensing Section.",
+    "en": "Text registered with the Department of Public Information, then approval by the Passenger Transport Licensing Section.",
     "ir": "Tekst KMDde kattalat, andan kiyin Jürgünchü tashuu litsenziyaloo bölümü makuldayt.",
     "ru": "Текст регистрируется в ДОИ, затем согласование Отдела лицензирования пассажирских перевозок."
    },
@@ -17578,7 +17578,7 @@
    "steps": [
     {
      "title": {
-      "en": "Register the text of the roof light and the door markings at the DPI",
+      "en": "Register the text of the roof light and the door markings at the Department of Public Information",
       "ir": "Üstünkü chıraktın jana eshik belgilerinin tekstin KMDde kattatuu",
       "ru": "Зарегистрировать текст фонаря и маркировки дверей в ДОИ"
      },
@@ -18242,7 +18242,7 @@
      },
      "inst": "dpiperf",
      "note": {
-      "en": "Singers and musicians who perform for payment hold the DPI performer's registration card, renewed every year. A performer without a card may perform only if he is a relative of the bride or the groom within the third degree, shown by birth certificates.",
+      "en": "Singers and musicians who perform for payment hold a performer's registration card from the Department of Public Information, renewed every year. A performer without a card may perform only if he is a relative of the bride or the groom within the third degree, shown by birth certificates.",
       "ir": "Akı alıp atkargan ırchılar jana muzıkanttardın KMDnin atkaruuchu kattoo kartochkası bolot, al ar jılı jañılanat. Kartochkası jok atkaruuchu kelindin je küyöö balanın üchünchü daraja cheyinki tuuganı bolso gana atkara alat, al tuuluu tuuraluu kübölüktör menen körsötülöt.",
       "ru": "Певцы и музыканты, выступающие за плату, имеют регистрационную карточку исполнителя ДОИ, продлеваемую ежегодно. Исполнитель без карточки может выступать, только если он родственник невесты или жениха до третьей степени, что подтверждается свидетельствами о рождении."
      },
@@ -19153,7 +19153,7 @@
      },
      "inst": "dpi",
      "note": {
-      "en": "The leaflet is printed matter. The Iradi text may be on a separate sheet placed in each pack, but the sheet carries the DPI registration number of the leaflet it translates.",
+      "en": "The leaflet is printed matter. The Iradi text may be on a separate sheet placed in each pack, but the sheet carries the Department of Public Information registration number of the leaflet it translates.",
       "ir": "Nuskama basma buyum bolup eseptelet. Irad tilindegi tekst ar bir tañgakka salınguuchu özünchö barakta bolso bolot, birok barakta al kotorgon nuskamanın KMD kattoo nomeri bolot.",
       "ru": "Инструкция является печатной продукцией. Текст на ирадском языке может быть на отдельном листе, вложенном в каждую упаковку, но на листе указывается регистрационный номер ДОИ той инструкции, перевод которой он содержит."
      },
@@ -21630,7 +21630,7 @@
      },
      "inst": "sanit",
      "note": {
-      "en": "The inspector checks the flour store (sacks on pallets 15 cm above the floor), the water (from the city mains, or from a well with a laboratory report), the tandoor cloths (one set per baker, changed daily) and the selling window, which has a ledge of non-absorbent material. Nan is sold unwrapped; nan wrapped in newspaper is packaged food and needs a label registered at the DPI.",
+      "en": "The inspector checks the flour store (sacks on pallets 15 cm above the floor), the water (from the city mains, or from a well with a laboratory report), the tandoor cloths (one set per baker, changed daily) and the selling window, which has a ledge of non-absorbent material. Nan is sold unwrapped; nan wrapped in newspaper is packaged food and needs a label registered at the Department of Public Information.",
       "ir": "Inspektor un kampasın (kaptar poldon 15 sm biyik paddondordo), suunu (shaardık suu tütügünön, je laboratoriyalık korutundusu bar kuduktan), tandır kezdemelerin (ar bir nan bıshıruuchuga bir toptom, kün sayın almashtırılat) jana satuu terezesin tekshiret, terezede suu siñirbegen materialdan tokcho bolot. Nan oroosuz satılat; gazetaga oroolgon nan tañgaktalgan tamak-ash bolup eseptelet jana KMDde kattalgan etiketka talap kılat.",
       "ru": "Инспектор проверяет мучной склад (мешки на поддонах в 15 см от пола), воду (из городского водопровода или из колодца с лабораторным протоколом), тандырные полотенца (по комплекту на пекаря, меняются ежедневно) и окно продажи, у которого должен быть выступ из невпитывающего материала. Нан продаётся без упаковки; нан, завёрнутый в газету, является упакованным продуктом и требует этикетки, зарегистрированной в ДОИ."
      },
@@ -21862,7 +21862,7 @@
     "ru": "Получить разрешение на вывеску"
    },
    "desc": {
-    "en": "Permit of the Architecture and Planning Department, then registration of the sign text at the DPI.",
+    "en": "Permit of the Architecture and Planning Department, then registration of the sign text at the Department of Public Information.",
     "ir": "Arkhitektura jana shaar kurulushu bölümünün uruksatı, andan kiyin jarnama tekstin KMDde kattoo.",
     "ru": "Разрешение Управления архитектуры и градостроительства, затем регистрация текста вывески в ДОИ."
    },
@@ -21905,7 +21905,7 @@
     },
     {
      "title": {
-      "en": "Register the sign text at the DPI",
+      "en": "Register the sign text at the Department of Public Information",
       "ir": "Jarnama tekstin KMDde kattatuu",
       "ru": "Зарегистрировать текст вывески в ДОИ"
      },
@@ -23113,14 +23113,14 @@
   "a-press-reg": {
    "objective": "a-business-press",
    "title": {
-    "en": "Register the periodical with the DPI",
+    "en": "Register the periodical with the Department of Public Information",
     "ir": "Merzimdüü basılmanı KMDde kattatuu",
     "ru": "Зарегистрировать издание в ДОИ"
    },
    "desc": {
-    "en": "Registration of a periodical at window 2 of the Department of Public Information; certificate with a DPI-P number.",
-    "ir": "Kogomduk maalımat departamentinin 2-terezesinde merzimdüü basılmanı kattoo; DPI-P nomeri bar kübölük.",
-    "ru": "Регистрация издания в окне 2 Департамента общественной информации; свидетельство с номером DPI-P."
+    "en": "Registration of a periodical at window 2 of the Department of Public Information; certificate with a PI-P number.",
+    "ir": "Kogomduk maalımat departamentinin 2-terezesinde merzimdüü basılmanı kattoo; PI-P nomeri bar kübölük.",
+    "ru": "Регистрация издания в окне 2 Департамента общественной информации; свидетельство с номером PI-P."
    },
    "inst": "dpi",
    "steps": [
@@ -23238,9 +23238,9 @@
      },
      "inst": "dpi",
      "note": {
-      "en": "The number has the form DPI-P 0118/2009: a serial number and the year of registration. It is printed in the imprint of every issue with the names of the founder, the editor-in-chief and the printing house, the print run and the date of signing for press. A periodical that has not published its first issue within six months of registration is struck off.",
-      "ir": "Nomer DPI-P 0118/2009 türündö bolot: tartip nomeri jana kattalgan jılı. Al ar bir sandın chıgısh maalımatında uyushturuuchunun, bashkı redaktordun jana basmakananın attarı, nuskalardın sanı jana basmaga kol koyulgan künü menen basılat. Kattalgandan kiyin altı aydın ichinde birinchi sanın chıgarbagan merzimdüü basılma reestrden chıgarılat.",
-      "ru": "Номер имеет вид DPI-P 0118/2009: порядковый номер и год регистрации. Он печатается в выходных данных каждого номера вместе с именами учредителя, главного редактора и типографии, тиражом и датой подписания в печать. Издание, не выпустившее первый номер в течение шести месяцев после регистрации, исключается из реестра."
+      "en": "The number has the form PI-P 0118/2009: a serial number and the year of registration. It is printed in the imprint of every issue with the names of the founder, the editor-in-chief and the printing house, the print run and the date of signing for press. A periodical that has not published its first issue within six months of registration is struck off.",
+      "ir": "Nomer PI-P 0118/2009 türündö bolot: tartip nomeri jana kattalgan jılı. Al ar bir sandın chıgısh maalımatında uyushturuuchunun, bashkı redaktordun jana basmakananın attarı, nuskalardın sanı jana basmaga kol koyulgan künü menen basılat. Kattalgandan kiyin altı aydın ichinde birinchi sanın chıgarbagan merzimdüü basılma reestrden chıgarılat.",
+      "ru": "Номер имеет вид PI-P 0118/2009: порядковый номер и год регистрации. Он печатается в выходных данных каждого номера вместе с именами учредителя, главного редактора и типографии, тиражом и датой подписания в печать. Издание, не выпустившее первый номер в течение шести месяцев после регистрации, исключается из реестра."
      },
      "gives": [
       "a-dpicert"
@@ -23288,9 +23288,9 @@
      },
      "inst": "a-legaldep",
      "note": {
-      "en": "A periodical receives one LD number for the title, not for each issue. Irad has no ISSN centre; the LD number is printed in the imprint beside the DPI-P number.",
-      "ir": "Merzimdüü basılma ar bir san üchün emes, atalısh üchün bir LD nomerin alat. Iradda ISSN borboru jok; LD nomeri chıgısh maalımatında DPI-P nomerinin janına basılat.",
-      "ru": "Периодическое издание получает один номер LD на название, а не на каждый номер. В Ираде нет центра ISSN; номер LD печатается в выходных данных рядом с номером DPI-P."
+      "en": "A periodical receives one LD number for the title, not for each issue. Irad has no ISSN centre; the LD number is printed in the imprint beside the PI-P number.",
+      "ir": "Merzimdüü basılma ar bir san üchün emes, atalısh üchün bir LD nomerin alat. Iradda ISSN borboru jok; LD nomeri chıgısh maalımatında PI-P nomerinin janına basılat.",
+      "ru": "Периодическое издание получает один номер LD на название, а не на каждый номер. В Ираде нет центра ISSN; номер LD печатается в выходных данных рядом с номером PI-P."
      },
      "needs": [
       "a-dpicert",
@@ -29305,7 +29305,7 @@
     "ru": "Зарегистрировать вывеску"
    },
    "desc": {
-    "en": "Registration of the text at the DPI and permit of City Hall for the outdoor sign.",
+    "en": "Registration of the text at the Department of Public Information and permit of City Hall for the outdoor sign.",
     "ir": "Tekstti KMDde kattoo jana tashkı jarnama takta üchün meriyanın uruksatı.",
     "ru": "Регистрация текста в ДОИ и разрешение мэрии на наружную вывеску."
    },
@@ -29319,7 +29319,7 @@
    "steps": [
     {
      "title": {
-      "en": "Register the text of the signboard at the DPI",
+      "en": "Register the text of the signboard at the Department of Public Information",
       "ir": "Jarnama taktanın tekstin KMDde kattatuu",
       "ru": "Зарегистрировать текст вывески в ДОИ"
      },
@@ -33726,7 +33726,7 @@
   },
   "evacplan": {
    "name": {
-    "en": "Evacuation plan of each guest room in three languages, with the DPI registration number",
+    "en": "Evacuation plan of each guest room in three languages, with the Department of Public Information registration number",
     "ir": "Ar bir konok bölmösünün üch tildegi evakuatsiya planı, KMDnin kattoo nomeri menen",
     "ru": "План эвакуации каждой гостевой комнаты на трёх языках с регистрационным номером ДОИ"
    }
@@ -34410,9 +34410,9 @@
   },
   "a-dpicert": {
    "name": {
-    "en": "Certificate of registration of a periodical (DPI-P number)",
-    "ir": "Merzimdüü basılmanı kattoo kübölügü (DPI-P nomeri)",
-    "ru": "Свидетельство о регистрации периодического издания (номер DPI-P)"
+    "en": "Certificate of registration of a periodical (PI-P number)",
+    "ir": "Merzimdüü basılmanı kattoo kübölügü (PI-P nomeri)",
+    "ru": "Свидетельство о регистрации периодического издания (номер PI-P)"
    }
   },
   "a-ldtitle": {
@@ -35126,7 +35126,7 @@
   },
   "labels": {
    "no": {
-    "en": "DPI Regulation No. 12",
+    "en": "Department of Public Information Regulation No. 12",
     "ir": "KMDnin № 12 jobosu",
     "ru": "Положение ДОИ № 12"
    },
@@ -35414,7 +35414,7 @@
   },
   "filmreg": {
    "no": {
-    "en": "DPI Regulation No. 19",
+    "en": "Department of Public Information Regulation No. 19",
     "ir": "KMDnin № 19 jobosu",
     "ru": "Положение ДОИ № 19"
    },
