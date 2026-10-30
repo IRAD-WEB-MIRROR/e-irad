@@ -39,7 +39,9 @@ window.E_SERVICES = {
       keywords: "business company register firm ishkana kattoo бизнес регистрация фирма ИП"
     },
     {
-      id: "census", cat: "biz", sec: "bc", status: "soon", icon: "chart",
+      id: "census", cat: "biz", sec: "bc", icon: "chart",
+      /* the online questionnaire (/census/) is open 1-30 November 2026, Irad time (UTC+6) */
+      status: (function () { var n = Date.now(); return n < Date.UTC(2026, 9, 31, 18) ? "soon" : n < Date.UTC(2026, 10, 30, 18) ? "ok" : "off"; })(),
       name: { en: "Census of business entities 2026", ir: "2026-jılkı ishkanalardın sanagı", ru: "Перепись хозяйствующих субъектов 2026" },
       desc: { en: "How to answer the census questionnaire before 30 November.", ir: "Sanak suroo-joop kagazına 30-noyabrga cheyin kantip joop berüü kerek.", ru: "Как ответить на вопросы переписи до 30 ноября." },
       agency: { en: "Territorial Statistics Office", ir: "Aymaktık statistika keñsesi", ru: "Территориальное статистическое управление" },
