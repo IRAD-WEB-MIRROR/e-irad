@@ -378,7 +378,99 @@
       var amt = Math.round(kwh * tariff * 100) / 100, total = amt + arr;
       result(kv([[L(BILL.acctNo), esc(mask(a))], [L(BILL.period), esc(monthName(lastMonth()))], [L(BILL.readings), fmtN(prev) + " → " + fmtN(prev + kwh)], [L(BILL.used), fmtN(kwh) + " kWh"], [L(BILL.tariff), som(tariff) + " / kWh"]].concat(arr ? [[L(BILL.arrears), som(arr)]] : []).concat([[L(BILL.due), "<b>" + som(total) + "</b>"], [L(BILL.dueBy), esc(fmtD(dueDate()))]])) + payBox("electricity"));
     });
+    calcBox(box);
   };
+
+  /* bill calculator: rates from the Iradenergo schedule of 1 January 2025 (docs/iradenergo-tariffs-2025.pdf) */
+  var CALC = {
+    h: { en: "Estimate a bill", ir: "Eseptin boljoldu summası", ru: "Рассчитать счёт" },
+    intro: { en: "Work out what a month's electricity will cost before the bill comes. Rates from the Iradenergo tariff schedule in force from 1 January 2025; sales tax is included.", ir: "Esep kelgenge cheyin bir aylık elektr kancha turarın esepteñiz. Tarifter 2025-jıldın 1-yanvarınan küchündögü Iradenergonun tarifteri boyuncha; satuu salıgı kirgen.", ru: "Узнайте, сколько будет стоить электроэнергия за месяц, ещё до прихода квитанции. Тарифы «Ирадэнерго», действующие с 1 января 2025 года; налог с продаж включён." },
+    group: { en: "Consumer group", ir: "Tutunuuchu tobu", ru: "Группа потребителей" },
+    groups: [
+      ["1.1", 0.32, { en: "Households: flat or private house", ir: "Turgundar: batir je jeke üy", ru: "Население: квартира или частный дом" }],
+      ["1.2", 0.32, { en: "Garage, cellar or summer house on its own meter", ir: "Garaj, ertölö je dacha (öz hisoochu menen)", ru: "Гараж, подвал или дача с отдельным счётчиком" }],
+      ["1.3", 0.32, { en: "Place of worship or church school", ir: "Ibadat jayı je chirköö mektebi", ru: "Культовое здание или церковная школа" }],
+      ["1.4", 0.74, { en: "Institution financed from the budget", ir: "Byudjettik mekeme", ru: "Бюджетное учреждение" }],
+      ["1.6", 1.12, { en: "Shop, office, café or other business", ir: "Dükön, keñse, kafe je bashka ishkana", ru: "Магазин, офис, кафе и другой бизнес" }],
+      ["1.7", 0.96, { en: "Industry, supplied at 0.4 kV", ir: "Önör jay, 0,4 kV", ru: "Промышленность, 0,4 кВ" }],
+      ["1.8", 0.84, { en: "Industry, supplied at 6–10 kV", ir: "Önör jay, 6–10 kV", ru: "Промышленность, 6–10 кВ" }],
+      ["1.9", 0.69, { en: "Industry, supplied at 35 kV and above", ir: "Önör jay, 35 kV jana jogoru", ru: "Промышленность, 35 кВ и выше" }],
+      ["1.10", 0.18, { en: "Irrigation pumping (1 April to 15 October)", ir: "Sugaruu suusun sorduruu (1-aprelden 15-oktyabrga cheyin)", ru: "Насосный полив (1 апреля – 15 октября)" }]
+    ],
+    kwh: { en: "Consumption in a month, kWh", ir: "Bir aylık sarptoo, kVt·saat", ru: "Расход за месяц, кВт·ч" },
+    kwhPh: { en: "from the meter, or work it out below", ir: "hisoochtan, je tömöndö eseptep chıgarıñız", ru: "по счётчику или рассчитайте ниже" },
+    kwhBad: { en: "Enter the consumption as a whole number of kWh, up to 9,999,999.", ir: "Sarptoonu bütün san menen jazıñız, 9 999 999 kVt·saatka cheyin.", ru: "Укажите расход целым числом кВт·ч, не более 9 999 999." },
+    late: { en: "Days paid late after the 25th", ir: "25ten kiyin kechiktirilgen kündör", ru: "Дней просрочки после 25-го числа" },
+    go: { en: "Calculate", ir: "Eseptöö", ru: "Рассчитать" },
+    app: { en: "Don't know the consumption? Add up your appliances", ir: "Sarptoonu bilbeysizbi? Üy buyumdarıñızdı koshuñuz", ru: "Не знаете расход? Сложите ваши приборы" },
+    appNote: { en: "Hours a day each appliance is on (the fridge runs all day). Typical wattages; your own may differ.", ir: "Ar bir buyum kününö neche saat ishteyt (muzdatkıch kün boyu ishteyt). Kadimki kubattuuluk; sizdiki bashkacha bolushu mümkün.", ru: "Сколько часов в день работает каждый прибор (холодильник — круглые сутки). Мощности типовые, у ваших приборов может быть иначе." },
+    use: { en: "Use this figure", ir: "Bul sandı koldonuu", ru: "Подставить" },
+    apps: [
+      ["fr", 150, 0.35, { en: "Refrigerator", ir: "Muzdatkıch", ru: "Холодильник" }, 24],
+      ["tv", 90, 1, { en: "Television", ir: "Televizor", ru: "Телевизор" }, 4],
+      ["lt", 300, 1, { en: "Lights, five 60 W bulbs", ir: "Jarık, besh lampa, 60 Vt", ru: "Освещение, пять лампочек по 60 Вт" }, 5],
+      ["kt", 2000, 1, { en: "Electric kettle", ir: "Elektr choynek", ru: "Электрочайник" }, 0.5],
+      ["wm", 500, 1, { en: "Washing machine", ir: "Kir juuguch mashina", ru: "Стиральная машина" }, 0.5],
+      ["ir", 1000, 1, { en: "Iron", ir: "Ütük", ru: "Утюг" }, 0.2],
+      ["pc", 120, 1, { en: "Computer", ir: "Kompyuter", ru: "Компьютер" }, 2],
+      ["st", 1500, 1, { en: "Electric stove, one ring", ir: "Elektr plita, bir konforka", ru: "Электроплита, одна конфорка" }, 1],
+      ["ht", 2000, 1, { en: "Heater (reflector or oil-filled)", ir: "Jılıtkıch (reflektor je mayluu)", ru: "Обогреватель (рефлектор или масляный)" }, 0],
+      ["wh", 1500, 0.6, { en: "Water heater (boiler)", ir: "Suu jılıtkıch (boyler)", ru: "Водонагреватель (бойлер)" }, 0]
+    ],
+    hrs: { en: "hours a day", ir: "saat/kün", ru: "ч в день" },
+    tariff: { en: "Tariff (line {n} of the schedule)", ir: "Tarif (tariftin {n}-sabı)", ru: "Тариф (строка {n} перечня)" },
+    energy: { en: "Electricity", ir: "Elektr energiyası", ru: "Электроэнергия" },
+    pen: { en: "Late payment penalty, 0.1% a day for {d} days", ir: "Kechiktirgen üchün ayıp, kününö 0,1%, {d} kün", ru: "Пеня 0,1% в день за {d} дн." },
+    total: { en: "Total to pay", ir: "Bardıgı tölöö", ru: "Итого к оплате" },
+    usd: { en: "In dollars at today's official rate", ir: "Bügünkü rasmiy kurs boyuncha dollar menen", ru: "В долларах по официальному курсу на сегодня" },
+    bread: { en: "The same as", ir: "Bul", ru: "Это столько же, сколько" },
+    loaves: { en: "{n} loaves of bread at today's bazaar price", ir: "bügünkü bazar baası menen {n} nan", ru: "{n} буханок хлеба по сегодняшней базарной цене" },
+    pump: { en: "The pumping tariff applies only from 1 April to 15 October; out of season the connection is off.", ir: "Sorduruu tarifi 1-aprelden 15-oktyabrga cheyin gana; mezgilden tıshkarı tok ajıratılgan.", ru: "Тариф для насосного полива действует только с 1 апреля по 15 октября; вне сезона подключение отключено." },
+    warn: { en: "A debt of more than two months' bills can lead to disconnection ten days after a written warning. Reconnection costs 240 som each time.", ir: "Eki aylık eseptten ashkan karız jazuu eskertüüdön on kün ötkön soñ tokton ajıratuuga alıp kelishi mümkün. Kayra tutashtıruu ar jolu 240 som.", ru: "Долг более чем за два месяца может привести к отключению через десять дней после письменного предупреждения. Повторное подключение стоит 240 сомов." },
+    est: { en: "An estimate only. The bill from your network company is the one to pay.", ir: "Bul boljol gana. Tölöö üchün tarmak kompaniyasınıñ esebi negiz.", ru: "Это только оценка. Оплачивать нужно по квитанции вашей сетевой компании." }
+  };
+  var TODAY_P = null;
+  function loadToday(cb) {
+    if (TODAY_P) { cb(TODAY_P); return; }
+    fetch("https://iradone.com/data/today.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { TODAY_P = j || {}; cb(TODAY_P); }).catch(function () { TODAY_P = {}; cb(TODAY_P); });
+  }
+  function calcBox(box) {
+    var wrap = document.createElement("div");
+    wrap.innerHTML = '<form class="flow inline" id="fcalc" novalidate><h3>' + esc(L(CALC.h)) + '</h3><p class="tiny">' + esc(L(CALC.intro)) + "</p>" +
+      field("cgrp", L(CALC.group), sel("cgrp", CALC.groups.map(function (g) { return [g[0], g[0] + "  " + L(g[2]) + " (" + fmtN(g[1], 2) + ")"]; }))) +
+      field("ckwh", L(CALC.kwh), inp("ckwh", L(CALC.kwhPh), ' inputmode="numeric" maxlength="7"')) +
+      '<details class="applist"><summary>' + esc(L(CALC.app)) + '</summary><p class="tiny">' + esc(L(CALC.appNote)) + "</p><table>" +
+      CALC.apps.map(function (a) { return '<tr><td><label for="ap-' + a[0] + '">' + esc(L(a[3])) + '</label> <span class="tiny">' + fmtN(a[1]) + ' W</span></td><td><input id="ap-' + a[0] + '" type="number" min="0" max="24" step="any" value="' + a[4] + '"> ' + esc(L(CALC.hrs)) + "</td></tr>"; }).join("") +
+      '</table><p><b id="apsum"></b> <button type="button" class="btn ghost" id="apuse">' + esc(L(CALC.use)) + "</button></p></details>" +
+      field("clate", L(CALC.late), '<input id="clate" type="number" min="0" max="999" value="0">') +
+      '<button class="btn" type="submit">' + esc(L(CALC.go)) + '</button></form><div id="cres" class="result" hidden aria-live="polite"></div>';
+    box.appendChild(wrap);
+    function apKwh() { var s = 0; CALC.apps.forEach(function (a) { var h = Math.min(24, Math.max(0, parseFloat($("#ap-" + a[0]).value) || 0)); s += a[1] * a[2] * h * 30 / 1000; }); return Math.round(s); }
+    function apShow() { $("#apsum").textContent = fmtN(apKwh()) + " kWh"; }
+    $$(".applist input", wrap).forEach(function (el) { el.addEventListener("input", apShow); });
+    apShow();
+    $("#apuse").addEventListener("click", function () { $("#ckwh").value = apKwh(); $("#ckwh").focus(); });
+    $("#fcalc").addEventListener("submit", function (e) {
+      noForm(e);
+      var k = $("#ckwh").value.replace(/[\s,]/g, "");
+      if (!need("ckwh", function () { return /^\d{1,7}$/.test(k); })) { $("#ckwh-err").textContent = L(CALC.kwhBad); return; }
+      var kwh = +k, g = CALC.groups.filter(function (x) { return x[0] === $("#cgrp").value; })[0];
+      var late = Math.min(999, Math.max(0, parseInt($("#clate").value, 10) || 0));
+      var amt = Math.round(kwh * g[1] * 100) / 100, pen = Math.min(amt, Math.round(amt * 0.001 * late * 100) / 100), tot = amt + pen;
+      loadToday(function (td) {
+        var rows = [[L(CALC.tariff, { n: g[0] }), som(g[1]) + " / kWh"], [L(CALC.energy), fmtN(kwh) + " kWh × " + fmtN(g[1], 2) + " = " + som(amt)]];
+        if (late) rows.push([L(CALC.pen, { d: late }), som(pen)]);
+        rows.push([L(CALC.total), "<b>" + som(tot) + "</b>"]);
+        var usd = td.rates && td.rates.official && td.rates.official.usd;
+        if (usd) rows.push([L(CALC.usd) + " (" + fmtN(usd, 2) + ")", "US$ " + fmtN(tot / usd, 2)]);
+        var br = (td.prices && td.prices.food || []).filter(function (x) { return x.id === "bread"; })[0];
+        if (br && br.som && g[0] === "1.1" && tot >= br.som) rows.push([L(CALC.bread), esc(L(CALC.loaves, { n: fmtN(Math.floor(tot / br.som)) }))]);
+        var r = $("#cres");
+        r.innerHTML = kv(rows) + (g[0] === "1.10" ? '<p class="tiny">' + esc(L(CALC.pump)) + "</p>" : "") + (late > 40 ? '<p class="warn">' + esc(L(CALC.warn)) + "</p>" : "") + '<p class="tiny">' + esc(L(CALC.est)) + ' <a href="/docs/iradenergo-tariffs-2025.pdf">PDF</a></p>';
+        r.hidden = false; r.scrollIntoView({ block: "nearest" });
+      });
+    });
+  }
   FLOWS.water = function (box) {
     box.innerHTML = '<form class="flow" id="fw">' + field("wnet", L(BILL.wcity), sel("wnet", BILL.wnets.map(function (k) { return [k[0], L(k[1])]; }))) +
       field("acct", L(BILL.acct), inp("acct", L(BILL.acctPh), ' inputmode="numeric" maxlength="14"')) + '<button class="btn" type="submit">' + esc(L(BILL.show)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div>';
