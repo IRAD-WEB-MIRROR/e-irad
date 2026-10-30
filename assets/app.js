@@ -392,12 +392,16 @@
       result(kv([[L(BILL.acctNo), esc(mask(a))], [L(BILL.period), esc(monthName(lastMonth()))], [L(BILL.persons), String(p)], [L(BILL.wrate), som(wr)], [L(BILL.srate), som(sr)], [L(BILL.due), "<b>" + som(total) + "</b>"], [L(BILL.dueBy), esc(fmtD(dueDate()))]]) + '<p class="tiny">' + esc(L(BILL.winter)) + "</p>" + payBox("water"));
     });
   };
-  HELP.electricity = {
+  HELP.water = {
     en: "<h3>Where else can I pay?</h3><p>At any Talasbank branch, at Irad Pochtasy counters and at the cash desks of Talas and Nurzhan Electric Networks. Keep the receipt until the next bill shows the payment.</p><h3>Meter readings</h3><p>Readings are taken by the network's inspectors once a month. If you think a reading is wrong, call the network's office with your account number.</p>",
     ir: "<h3>Dagı kayda tölösö bolot?</h3><p>Talasbanktın kaalagan filialında, Irad Pochtasının kassalarında jana Talas, Nurzhan elektr tarmaktarının kassalarında. Kiyinki esepte tölöm körüngönchö kvitantsiyanı saktañız.</p><h3>Hisoochtun körsötküchü</h3><p>Körsötküchtü tarmaktın inspektorloru ayına bir jolu alat. Kata bar dep oylosoñuz, esep nomeriñiz menen tarmaktın keñsesine chalıñız.</p>",
     ru: "<h3>Где ещё можно оплатить?</h3><p>В любом отделении «Таласбанка», в окошках «Ирадпочты» и в кассах Таласских и Нуржанских электросетей. Сохраняйте квитанцию, пока оплата не отразится в следующем счёте.</p><h3>Показания счётчика</h3><p>Показания снимают контролёры сети раз в месяц. Если вы считаете, что показания неверны, позвоните в отделение сети и назовите номер лицевого счёта.</p>"
   };
-  HELP.water = HELP.electricity;
+  HELP.electricity = {
+    en: HELP.water.en + "<h3>Tariffs</h3><p>Households pay 0.32 som per kWh. All tariffs and connection charges: <a href=\"/docs/iradenergo-tariffs-2025.pdf\">Iradenergo tariff schedule from 1 January 2025</a> (PDF).</p>",
+    ir: HELP.water.ir + "<h3>Tarifter</h3><p>Turgundar 1 kVt·saat üchün 0,32 som töloyt. Bardık tarifter jana tutashtıruu akısı: <a href=\"/docs/iradenergo-tariffs-2025.pdf\">2025-jıldın 1-yanvarınan tartıp Iradenergonun tarifteri</a> (PDF).</p>",
+    ru: HELP.water.ru + "<h3>Тарифы</h3><p>Население платит 0,32 сома за кВт·ч. Все тарифы и плата за подключение: <a href=\"/docs/iradenergo-tariffs-2025.pdf\">тарифы «Ирадэнерго» с 1 января 2025 года</a> (PDF).</p>"
+  };
 
   /* plates: fines and motor policy */
   var PL = {
