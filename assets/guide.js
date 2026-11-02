@@ -57,6 +57,7 @@ window.E_GUIDE = function (A) {
     var oo = obj(p.objective);
     return { id: id, title: p.title, desc: p.desc, ctx: p.context || oo.context, steps: p.steps.map(function (s) { return { s: s, proc: id }; }), laws: mergeLaws(p.laws || []), obj: oo, full: false };
   }
+  function plink(id) { return obj(id) ? "/procedures/" + id + "/" : "/procedure.html?id=" + id; }
   function mergeLaws(list) {
     var m = {}, order = [];
     list.forEach(function (l) {
@@ -275,7 +276,7 @@ window.E_GUIDE = function (A) {
       }
     });
     var v = view(o.id);
-    h += '</ol><a class="fullcard" href="/procedure.html?id=' + o.id + '"><span class="fct">' + esc(t("full")) + ": " + esc(L(o.title)) + '</span><span class="fcd">' + esc(t("fullDesc")) + " " + esc(statsLine(v)) + '</span><span class="fcx">' + esc(A.som(totalCost(v))) + " · " + esc(fmtTotal(durSum(v.steps).w[0], 0)) + "–" + esc(fmtTotal(durSum(v.steps).w[1], 0)) + "</span></a>";
+    h += '</ol><a class="fullcard" href="' + plink(o.id) + '"><span class="fct">' + esc(t("full")) + ": " + esc(L(o.title)) + '</span><span class="fcd">' + esc(t("fullDesc")) + " " + esc(statsLine(v)) + '</span><span class="fcx">' + esc(A.som(totalCost(v))) + " · " + esc(fmtTotal(durSum(v.steps).w[0], 0)) + "–" + esc(fmtTotal(durSum(v.steps).w[1], 0)) + "</span></a>";
     return h;
   }
   function procedures() {
@@ -290,7 +291,7 @@ window.E_GUIDE = function (A) {
         DATA.objectives.forEach(function (ob) {
           if (opId && ob.op !== opId) return;
           var hay = [L(ob.title), L(ob.intro), L(ob.productName), ob.title.en, ob.productName.en, L(op(ob.op).name)].join(" ").toLowerCase();
-          if (hay.indexOf(ql) >= 0) hits.push(["/procedure.html?id=" + ob.id, t("full") + ": " + L(ob.title), L(ob.intro), L(op(ob.op).name)]);
+          if (hay.indexOf(ql) >= 0) hits.push([plink(ob.id), t("full") + ": " + L(ob.title), L(ob.intro), L(op(ob.op).name)]);
           ob.items.forEach(function (it) {
             (it.proc ? [it.proc] : it.options).forEach(function (pid) {
               var p = DATA.procedures[pid], hy = [L(p.title), L(p.desc), p.title.en, L(inst(p.inst).name)].join(" ").toLowerCase();
@@ -365,8 +366,10 @@ window.E_GUIDE = function (A) {
   function procedure() {
     loading();
     load(function () {
-      var qs = new URLSearchParams(location.search), id = qs.get("id"), v = id ? view(id) : null;
+      var qs = new URLSearchParams(location.search), own = document.body.getAttribute("data-id"), id = qs.get("id") || own, v = id ? view(id) : null;
       if (!v) { A.pageNF(); return; }
+      /* each full procedure has its own page at /procedures/<id>/; procedure.html?id= forwards there */
+      if (!own && v.full) { qs.delete("id"); var rest = qs.toString(); location.replace(plink(id) + (rest ? "?" + rest : "") + location.hash); return; }
       var stepN = Math.max(0, Math.min(v.steps.length, parseInt(qs.get("step"), 10) || 0));
       var o = v.obj, oo = op(o.op), ref = "PR-" + ("0000" + (A.hash(id) % 100000)).slice(-5);
       document.title = L(v.title) + " | e-Irad";
@@ -378,7 +381,7 @@ window.E_GUIDE = function (A) {
         '<div class="ctx" hidden>' + esc(L(v.ctx)) + "</div>" +
         '<div class="contactnote" hidden role="dialog" aria-label="' + esc(t("contactH")) + '"><h3>' + esc(t("contactH")) + "</h3><p>" + esc(t("contactP")) + '</p><dl class="kvs"><dt>' + esc(t("ref")) + "</dt><dd><b>" + ref + "</b></dd><dt>" + esc(t("phone")) + "</dt><dd>+996-39-2-27-14-14</dd><dt>E-mail</dt><dd><a href=\"mailto:help@e-irad.org?subject=" + ref + '">help@e-irad.org</a></dd><dt>' + esc(t("hours")) + "</dt><dd>" + esc(t("footHours")) + '</dd></dl><button type="button" class="btn ghost" data-act="close">' + esc(t("close")) + '</button></div><p class="sharemsg tiny" hidden></p></div>';
       h += '<div class="pgrid"><div class="stepcol" id="stepcol">' + (stepN ? stepDetail(v, stepN) : stepList(v)) + "</div>" + summary(v) + "</div>";
-      h += '<p class="tiny printonly">' + esc(t("printed", { d: A.fmtD(A.today()) })) + " · https://e-irad.org/procedure.html?id=" + esc(id) + '</p><p class="tiny updated">' + esc(t("updatedOn", { d: A.fmtD(new Date(DATA.updated + "T00:00:00Z")) })) + "</p></div>";
+      h += '<p class="tiny printonly">' + esc(t("printed", { d: A.fmtD(A.today()) })) + " · https://e-irad.org" + esc(v.full ? plink(id) : "/procedure.html?id=" + id) + '</p><p class="tiny updated">' + esc(t("updatedOn", { d: A.fmtD(new Date(DATA.updated + "T00:00:00Z")) })) + "</p></div>";
       $("#app").innerHTML = h;
       wirePanels($("#app")); wireCost($("#app"), v); wireSteps(v);
       $("[data-act=ctx]").addEventListener("click", function () { var c = $(".ctx"), o2 = c.hidden; c.hidden = !o2; this.setAttribute("aria-expanded", o2); });
@@ -386,7 +389,7 @@ window.E_GUIDE = function (A) {
       $("[data-act=close]").addEventListener("click", function () { $(".contactnote").hidden = true; });
       $("[data-act=print]").addEventListener("click", function () { $$(".pnl").forEach(function (p) { p.classList.add("open"); }); window.print(); });
       $("[data-act=share]").addEventListener("click", function () {
-        var u = location.origin + location.pathname + "?id=" + id, m = $(".sharemsg");
+        var u = location.origin + (v.full ? plink(id) : location.pathname + "?id=" + id), m = $(".sharemsg");
         function fallback() { m.innerHTML = esc(t("copyHint")) + ' <input type="text" readonly value="' + esc(u) + '" size="40">'; m.hidden = false; var i = $("input", m); i.select(); }
         try { navigator.clipboard.writeText(u).then(function () { m.textContent = t("copied"); m.hidden = false; }, fallback); } catch (e) { fallback(); }
       });
@@ -417,7 +420,7 @@ window.E_GUIDE = function (A) {
         v.laws.forEach(function (l) { (cite[l[0]] = cite[l[0]] || []).indexOf(o.id) < 0 && cite[l[0]].push(o.id); });
         v.steps.forEach(function (x) { (x.s.gives || []).forEach(function (d) { if (RECEIPTS[d]) return; issued[d] = issued[d] || []; if (issued[d].indexOf(o.id) < 0) issued[d].push(o.id); }); });
       });
-      function olinks(list) { return list.map(function (id) { var o = obj(id); return '<a href="/procedure.html?id=' + id + '">' + esc(L(o.title)) + "</a>"; }).join(", "); }
+      function olinks(list) { return list.map(function (id) { var o = obj(id); return '<a href="' + plink(id) + '">' + esc(L(o.title)) + "</a>"; }).join(", "); }
       var h = '<div class="wrap page">' + crumbs([["e-Irad", "/"], [t("secBiz"), "/business.html"], [t("lawsPageH"), ""]]) + "<h1>" + esc(t("lawsPageH")) + '</h1><p class="lead">' + esc(t("lawsPageP")) + "</p>";
       h += panel(esc(t("lawsList")) + " (" + Object.keys(DATA.laws).length + ")", '<ul class="lawlist big">' + Object.keys(DATA.laws).map(function (k) { var x = DATA.laws[k]; return '<li id="l-' + k + '"><b>' + esc(L(x.no)) + "</b> " + esc(L(x.title)) + (cite[k] ? '<span class="tiny">' + t("citedIn", { p: olinks(cite[k]) }) + "</span>" : "") + "</li>"; }).join("") + "</ul>", true);
       var docs = Object.keys(issued).sort(function (a, b) { return docName(a).localeCompare(docName(b)); });

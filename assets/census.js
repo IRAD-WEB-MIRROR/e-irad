@@ -192,7 +192,7 @@ window.E_CENSUS = function (H) {
     document.title = L(C.title) + " | e-Irad";
     var SEP = ' <span class="sep">›</span> ';
     var help = "<h3>" + esc(L(C.helpH)) + "</h3><p>" + esc(L(C.helpP)) + "</p><p>" + esc(L(C.helpLine)) + '</p><p><a href="/forms/TSO-26.pdf">' + esc(L(C.pdf)) + '</a></p><p><a href="https://stats.iradgov.org/business-census.html">' + esc(L(C.tso)) + "</a></p>";
-    $("#app").innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + '<a href="/business.html">' + esc(t("secBiz")) + "</a>" + SEP + '<a href="/service.html?id=census">' + esc(L({ en: "Census of business entities 2026", ir: "2026-jılkı ishkanalardın sanagı", ru: "Перепись хозяйствующих субъектов 2026" })) + "</a>" + SEP + "<span>" + esc(L(C.tabs[0])) + "</span></nav>" +
+    $("#app").innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + '<a href="/business.html">' + esc(t("secBiz")) + "</a>" + SEP + '<a href="/services/census/">' + esc(L({ en: "Census of business entities 2026", ir: "2026-jılkı ishkanalardın sanagı", ru: "Перепись хозяйствующих субъектов 2026" })) + "</a>" + SEP + "<span>" + esc(L(C.tabs[0])) + "</span></nav>" +
       '<div class="svchead">' + H.icon("chart") + "<div><h1>" + esc(L(C.title)) + "</h1><p>" + esc(L(C.desc)) + '</p><p class="agency"><span>' + esc(t("agency")) + ":</span> " + esc(L(C.agency)) + " " + H.badge(open ? "ok" : before ? "soon" : "off") + "</p></div></div>" +
       '<div class="svcgrid"><div id="xmain"></div><aside class="help">' + help + "</aside></div></div>";
     var box = $("#xmain");

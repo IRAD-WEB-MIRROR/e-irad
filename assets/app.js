@@ -73,7 +73,7 @@
   var CUR = { business: "bhome", citizens: "chome", procedures: "proc", procedure: "proc", laws: "laws", login: "login", status: "status", faq: "faq", forms: "forms", contact: "contact", accessibility: "accessibility" };
   var LANG_ORDER = ["ir", "ru", "en"];
   function secOf(s) { var w = new URLSearchParams(location.search).get("s"); return w && s.sec.indexOf(w) >= 0 ? w : s.sec.charAt(0); }
-  function SEC() { if (PAGE === "service") { var s = svc(new URLSearchParams(location.search).get("id")); return s ? secOf(s) : "x"; } return PAGESEC[PAGE] || "x"; }
+  function SEC() { if (PAGE === "service") { var s = svc(new URLSearchParams(location.search).get("id") || document.body.getAttribute("data-id")); return s ? secOf(s) : "x"; } return PAGESEC[PAGE] || "x"; }
   var MARK = '<img class="mark" src="/assets/mark.svg" alt="" width="34" height="34">';
   function chrome() {
     var sec = SEC(), cur = CUR[PAGE] || PAGE, nav = NAVS[sec] || [];
@@ -143,7 +143,7 @@
   };
 
   /* ---------- catalogue ---------- */
-  function svcHref(s, sec) { if (s.url) return s.url; return "/service.html?id=" + s.id + (sec && s.sec.length > 1 && s.sec.charAt(0) !== sec ? "&s=" + sec : ""); }
+  function svcHref(s, sec) { if (s.url) return s.url; return "/services/" + s.id + "/" + (sec && s.sec.length > 1 && s.sec.charAt(0) !== sec ? "?s=" + sec : ""); }
   function card(s, sec) {
     return '<a class="svc" href="' + svcHref(s, sec) + '" data-kw="' + esc((L(s.name) + " " + L(s.desc) + " " + s.keywords + " " + s.name.en).toLowerCase()) + '">' + icon(s.icon) +
       '<span class="sbody"><span class="sname">' + esc(L(s.name)) + '</span><span class="sdesc">' + esc(L(s.desc)) + "</span>" + badge(s.status) + "</span></a>";
@@ -1370,9 +1370,9 @@
     });
   };
   HELP.stall = {
-    en: "<h3>Rules of the market</h3><p>Prices are labelled in Iradi; scales are certified by Iradstandart and checked by the market controller; the place is cleared by 18:00. A place may not be sublet. A place left unused for 30 days returns to the waiting list.</p><p><a href=\"/procedure.html?id=food-bazaar\">Step-by-step: every permit for a stall at Bazar-i Kalan →</a></p>",
-    ir: "<h3>Bazardın erejeleri</h3><p>Baalar irad tilinde jazılat; tarazalar Iradstandart tarabınan tastıktalat jana bazardın kontrolyoru tekshiret; orun 18:00gö cheyin boshotulat. Ordu bashka adamga ijaraga berüügö bolboyt. 30 kün koldonulbagan orun kezek tizmesine kaytat.</p><p><a href=\"/procedure.html?id=food-bazaar\">Kadam-kadam: Bazar-i Kalandagı orun üchün bardık uruksattar →</a></p>",
-    ru: "<h3>Правила рынка</h3><p>Ценники пишутся на ирадском языке; весы поверены «Ирадстандартом» и проверяются контролёром рынка; место освобождается к 18:00. Сдавать место в субаренду нельзя. Место, не используемое 30 дней, возвращается в лист ожидания.</p><p><a href=\"/procedure.html?id=food-bazaar\">Пошагово: все разрешения для места на Базар-и Калан →</a></p>"
+    en: "<h3>Rules of the market</h3><p>Prices are labelled in Iradi; scales are certified by Iradstandart and checked by the market controller; the place is cleared by 18:00. A place may not be sublet. A place left unused for 30 days returns to the waiting list.</p><p><a href=\"/procedures/food-bazaar/\">Step-by-step: every permit for a stall at Bazar-i Kalan →</a></p>",
+    ir: "<h3>Bazardın erejeleri</h3><p>Baalar irad tilinde jazılat; tarazalar Iradstandart tarabınan tastıktalat jana bazardın kontrolyoru tekshiret; orun 18:00gö cheyin boshotulat. Ordu bashka adamga ijaraga berüügö bolboyt. 30 kün koldonulbagan orun kezek tizmesine kaytat.</p><p><a href=\"/procedures/food-bazaar/\">Kadam-kadam: Bazar-i Kalandagı orun üchün bardık uruksattar →</a></p>",
+    ru: "<h3>Правила рынка</h3><p>Ценники пишутся на ирадском языке; весы поверены «Ирадстандартом» и проверяются контролёром рынка; место освобождается к 18:00. Сдавать место в субаренду нельзя. Место, не используемое 30 дней, возвращается в лист ожидания.</p><p><a href=\"/procedures/food-bazaar/\">Пошагово: все разрешения для места на Базар-и Калан →</a></p>"
   };
 
   /* building permit pre-application */
@@ -1415,7 +1415,7 @@
       if ($("#bph").checked) list.push(A.her);
       if ($("#bpb").checked) list.push(A.base);
       list.push(A.tax);
-      var link = '<a href="/procedure.html?id=build-storey">' + esc(L(BP.storeyLink)) + "</a>";
+      var link = '<a href="/procedures/build-storey/">' + esc(L(BP.storeyLink)) + "</a>";
       result(refBox(C.ref, refNo(FCODES[d] + "-BP", k + d + $("#bph").checked + $("#bpb").checked), [[L(BP.kind), esc(L(pick(BP.kinds, k)))], [L(BP.dist), esc(L(pick(DISTRICTS, d)))], [L(C.fee), k === "fence" ? "—" : som(duty("building"))]]) + H4(BP.need) + "<ol>" + list.map(function (x) { return "<li>" + esc(L(x)) + "</li>"; }).join("") + "</ol><p>" + L(BP.guide, { a: link }) + "</p>" + P(BP.pre, "warn") + counterEnd("building", L(BP.docs), BP.where));
     });
   };
@@ -1453,9 +1453,9 @@
     });
   };
   HELP.taxi = {
-    en: "<h3>Fares</h3><p>Fares are set by the taxi operator and shown on the taximeter. Fixed fares agreed in advance are allowed if written on the receipt. A taxi without a meter running is not a taxi; report it to the city police.</p><p><a href=\"/procedure.html?id=business-taxi\">Step-by-step: every permit to run a taxi →</a></p>",
-    ir: "<h3>Tarifter</h3><p>Tarifterdi taksi ishkanası belgileyt jana alar taksometrde körsötülöt. Aldın ala makuldashılgan turuktuu baa chekte jazılsa uruksat. Taksometri ishtebegen taksi taksi emes; al tuuraluu shaar politsiyasına kabarlañız.</p><p><a href=\"/procedure.html?id=business-taxi\">Kadam-kadam: taksi jürgüzüü üchün bardık uruksattar →</a></p>",
-    ru: "<h3>Тарифы</h3><p>Тарифы устанавливает перевозчик, они отображаются на таксометре. Фиксированная цена, согласованная заранее, допускается, если указана в чеке. Такси без включённого таксометра такси не является; сообщите о нём в городскую полицию.</p><p><a href=\"/procedure.html?id=business-taxi\">Пошагово: все разрешения для работы такси →</a></p>"
+    en: "<h3>Fares</h3><p>Fares are set by the taxi operator and shown on the taximeter. Fixed fares agreed in advance are allowed if written on the receipt. A taxi without a meter running is not a taxi; report it to the city police.</p><p><a href=\"/procedures/business-taxi/\">Step-by-step: every permit to run a taxi →</a></p>",
+    ir: "<h3>Tarifter</h3><p>Tarifterdi taksi ishkanası belgileyt jana alar taksometrde körsötülöt. Aldın ala makuldashılgan turuktuu baa chekte jazılsa uruksat. Taksometri ishtebegen taksi taksi emes; al tuuraluu shaar politsiyasına kabarlañız.</p><p><a href=\"/procedures/business-taxi/\">Kadam-kadam: taksi jürgüzüü üchün bardık uruksattar →</a></p>",
+    ru: "<h3>Тарифы</h3><p>Тарифы устанавливает перевозчик, они отображаются на таксометре. Фиксированная цена, согласованная заранее, допускается, если указана в чеке. Такси без включённого таксометра такси не является; сообщите о нём в городскую полицию.</p><p><a href=\"/procedures/business-taxi/\">Пошагово: все разрешения для работы такси →</a></p>"
   };
 
   /* alcohol licence */
@@ -1479,7 +1479,7 @@
     box.innerHTML = flowForm("fal", field("alk", L(AL.kind), sel("alk", AL.kinds.map(function (k) { return [k[0], L(k[1])]; }))) + field("ald", L(AL.city), sel("ald", opts(DISTRICTS))) + chk("aln", L(AL.near)) + chk("alr", L(AL.reg)), L(AL.btn));
     onSub("fal", function () {
       var k = $("#alk").value, row = AL.kinds.filter(function (x) { return x[0] === k; })[0];
-      if (k === "kymyz") { result('<p class="ok">' + esc(L(AL.kymyz)) + ' <a href="/procedure.html?id=food-kymyz">→</a></p>'); return; }
+      if (k === "kymyz") { result('<p class="ok">' + esc(L(AL.kymyz)) + ' <a href="/procedures/food-kymyz/">→</a></p>'); return; }
       if ($("#aln").checked) { result(P(AL.near100, "warn")); return; }
       if (!$("#alr").checked) { result(P(AL.noReg, "warn") + "<p>" + svcLink("business") + "</p>"); return; }
       if (k === "prod") { result(P(AL.prod, "warn") + formBox("alcohol")); return; }
@@ -1771,8 +1771,10 @@
   };
 
   function pageService() {
-    var id = new URLSearchParams(location.search).get("id"), s = svc(id), main = $("#app");
+    var qp = new URLSearchParams(location.search), own = document.body.getAttribute("data-id"), id = own || qp.get("id"), s = svc(id), main = $("#app");
     if (!s) { pageNF(); return; }
+    /* each service has its own page at /services/<id>/; the old service.html?id= addresses forward there */
+    if (!own && !s.url) { qp.delete("id"); var rest = qp.toString(); location.replace("/services/" + s.id + "/" + (rest ? "?" + rest : "") + location.hash); return; }
     document.title = L(s.name) + " | e-Irad";
     var sec = secOf(s), SEP = ' <span class="sep">›</span> ';
     main.innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + (sec === "b" ? '<a href="/business.html">' + esc(t("secBiz")) + "</a>" + SEP + '<a href="/business.html#services">' + esc(t("nav_bservices")) + "</a>" : '<a href="/citizens.html">' + esc(t("secCit")) + "</a>" + SEP + '<a href="/citizens.html#cat-' + s.cat + '">' + esc(t("cat" + s.cat.charAt(0).toUpperCase() + s.cat.slice(1))) + "</a>") + SEP + "<span>" + esc(L(s.name)) + "</span></nav>" +
@@ -1896,14 +1898,14 @@
   }
 
   var HX = { $: $, $$: $$, esc: esc, t: t, L: L, fmtN: fmtN, fmtD: fmtD, hash: hash, today: today, iradNow: iradNow, addDays: addDays, norm: norm, field: field, sel: sel, inp: inp, need: need, kv: kv, P: P, H4: H4, ul: ul, opts: opts, pick: pick, refBox: refBox, caps: caps, chk: chk, dateIn: dateIn, pad5: pad5, icon: icon, badge: badge, DISTRICTS: DISTRICTS };
-  var X = window.E_EXTRA ? window.E_EXTRA(HX) : {};
+  var XE = window.E_EXTRA ? window.E_EXTRA(HX) : {};
   var G = window.E_GUIDE({ $: $, $$: $$, esc: esc, t: t, L: L, fmtN: fmtN, som: som, fmtD: fmtD, hash: hash, today: today, S: S, card: card, svcHref: svcHref, pageNF: pageNF });
   var TITLES = { status: "nav_status", faq: "faqH", accessibility: "accH", contact: "ctH", login: "loginH" };
   function render() {
     document.documentElement.lang = I.htmlLang[LANG];
     chrome();
     if (TITLES[PAGE]) document.title = t(TITLES[PAGE]) + " | e-Irad";
-    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: X.vote, tests: X.tests, appeals: X.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
+    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: XE.vote, tests: XE.tests, appeals: XE.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
   }
   render();
 })();

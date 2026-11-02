@@ -269,7 +269,7 @@ window.E_APPS = (function () {
 
     document.title = L(T.title) + " | e-Irad";
     var SEP = ' <span class="sep">›</span> ';
-    var help = "<h3>" + esc(L(T.helpH)) + "</h3><p>" + esc(L(T.helpP)) + "</p><ul>" + SPEC.map(function (s) { return '<li><a href="/service.html?id=' + s[0] + '">' + esc(svcName(s[0])) + '</a> <span class="fcode">' + s[1] + "</span></li>"; }).join("") + "</ul>" +
+    var help = "<h3>" + esc(L(T.helpH)) + "</h3><p>" + esc(L(T.helpP)) + "</p><ul>" + SPEC.map(function (s) { return '<li><a href="/services/' + s[0] + '/">' + esc(svcName(s[0])) + '</a> <span class="fcode">' + s[1] + "</span></li>"; }).join("") + "</ul>" +
       "<h3>" + esc(L(T.helpS)) + "</h3><ul>" + L(T.helpL).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul><p>" + esc(L(T.helpN)) + "</p>";
     $("#app").innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + '<a href="/citizens.html">' + esc(H.t("secCit")) + "</a>" + SEP + "<span>" + esc(L(T.title)) + "</span></nav>" +
       '<div class="svchead">' + H.icon("doc") + "<div><h1>" + esc(L(T.title)) + "</h1><p>" + esc(L(T.desc)) + '</p><p class="agency"><span>' + esc(H.t("agency")) + ":</span> " + esc(L(T.agency)) + " " + H.badge("limited") + "</p></div></div>" +
