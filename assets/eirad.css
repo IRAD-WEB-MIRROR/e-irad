@@ -498,3 +498,23 @@ a.opt.fmp .opn, a.opt.fmp .opd { min-width: 0; overflow-wrap: anywhere; }
 .applist td { padding: 3px 4px; border-bottom: 1px dotted var(--line); vertical-align: middle; }
 .applist td:last-child { white-space: nowrap; text-align: right; }
 .applist input { width: 4.5em; font: inherit; padding: 2px 4px; border: 1px solid #a9b3bc; }
+
+/* State Language Test practice (/language-test/) */
+.ltlv label, .ltq label { display: block; font-weight: 400; margin: 3px 0; }
+.ltlv, .ltq { border: 1px solid var(--line); background: #f6f9fc; padding: 8px 12px; margin: 0 0 10px; }
+.ltq legend, .ltlv legend { font-weight: 600; padding: 0 4px; }
+.ltrev { margin: 10px 0; }
+.ltrev summary { cursor: pointer; color: var(--blue); font-weight: 600; }
+.ltrev li { margin: 6px 0; }
+.ltrev .lt-no { color: var(--ink-2); }
+.ltcert { position: relative; overflow: hidden; background: #fffdf6; border: 3px double var(--blue-2); padding: 18px 22px; margin: 12px 0; }
+.ltcert .lthead { display: flex; gap: 10px; align-items: center; font-size: .86rem; border-bottom: 1px solid var(--blue-line); padding-bottom: 8px; }
+.ltcert h2 { text-align: center; letter-spacing: .12em; color: var(--blue-2); margin: .8em 0 .1em; }
+.ltcert .ltsub { text-align: center; color: var(--muted); }
+.ltcert .ltbody { font-size: 1.05rem; text-align: center; margin: 1em 0; }
+.ltcert .ltwarn { border: 1px solid var(--off); color: var(--off); padding: 6px 10px; font-weight: 600; }
+.ltcert .ltwm { position: absolute; top: 42%; left: -10%; right: -10%; text-align: center; transform: rotate(-18deg); font-size: 4.2rem; font-weight: 700; letter-spacing: .2em; color: #8e1b2614; pointer-events: none; }
+@media print {
+  body.ltprint #top, body.ltprint #bottom, body.ltprint .crumbs, body.ltprint .svchead, body.ltprint #lr, body.ltprint .ltcf, body.ltprint .help { display: none !important; }
+  body.ltprint .ltcert { border-color: #000; margin: 0; }
+}

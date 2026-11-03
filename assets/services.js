@@ -223,6 +223,13 @@ window.E_SERVICES = {
       keywords: "exam results school testing graduation test uluttuk sınak mektep экзамен результаты тест школа"
     },
     {
+      id: "langtest", cat: "check", sec: "c", status: "ok", icon: "cap", url: "/language-test/",
+      name: { en: "State Language Test: practice and certificate check", ir: "Mamlekettik til sınagı: mashıguu jana kuböölüktü teksherüü", ru: "Тест по государственному языку: пробный тест и проверка сертификата" },
+      desc: { en: "A practice variant at level A, B or C with a printable practice certificate, and the check of a certificate by its number.", ir: "A, B je C deñgeeldegi mashıguu variantı, basıp chıgarılchu mashıguu kuböölügü jana kuböölüktü nomeri boyuncha teksherüü.", ru: "Пробный вариант уровня A, B или C с пробным сертификатом для печати и проверка сертификата по номеру." },
+      agency: { en: "Education Quality Agency, Office of the Governor", ir: "Bilim sapatı agenttigi, Gubernatordun apparatı", ru: "Агентство качества образования, Аппарат губернатора" },
+      keywords: "language test state language iradi certificate practice quiz til sınak mamlekettik kuböölük тест язык государственный сертификат"
+    },
+    {
       id: "vote", cat: "check", sec: "c", status: "limited", icon: "people", url: "/vote/",
       name: { en: "Am I on the voter register?", ir: "Men shayloochulardın tizmesindebi?", ru: "Есть ли я в списке избирателей?" },
       desc: { en: "Your entry and precinct for the elections of 2 November 2027.", ir: "2027-jıldın 2-noyabrındagı shayloolor üchün jazuuñuz jana uchastkañız.", ru: "Ваша запись и участок на выборах 2 ноября 2027 года." },

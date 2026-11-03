@@ -1905,7 +1905,7 @@
     document.documentElement.lang = I.htmlLang[LANG];
     chrome();
     if (TITLES[PAGE]) document.title = t(TITLES[PAGE]) + " | e-Irad";
-    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: XE.vote, tests: XE.tests, appeals: XE.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
+    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, contact: pageContact, login: pageLogin, vote: XE.vote, tests: XE.tests, appeals: XE.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, langtest: function () { if (window.E_LANGTEST) window.E_LANGTEST(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
   }
   render();
 })();
