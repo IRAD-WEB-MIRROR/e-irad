@@ -230,6 +230,13 @@ window.E_SERVICES = {
       keywords: "language test state language iradi certificate practice quiz til sınak mamlekettik kuböölük тест язык государственный сертификат"
     },
     {
+      id: "bringin", cat: "check", sec: "c", status: "ok", icon: "search", url: "https://customs.iradgov.org/bring.html",
+      name: { en: "What can I bring in?", ir: "Emneni ala kirsem bolot?", ru: "Что можно ввезти?" },
+      desc: { en: "Check a traveller's bag by route, length of stay and family: allowed, declare, duty, permit or forbidden, with the duty, Form CS-1 and the window.", ir: "Joloochunun bashtıgın jol, sapar möönötü jana üy-bülö boyuncha teksheriñiz: uruksat, deklaratsiya, bajı, uruksat kagaz je tıyuu, bajı, CS-1 forması jana tereze menen.", ru: "Проверка багажа пассажира по маршруту, сроку поездки и составу семьи: разрешено, декларирование, пошлина, разрешение или запрет, с пошлиной, бланком CS-1 и окном." },
+      agency: { en: "Customs Service of the ISEZ", ir: "IAEZdin Bajı kızmatı", ru: "Таможенная служба ОЭЗИ" },
+      keywords: "customs allowance traveller luggage declaration CS-1 duty bajı joloochu deklaratsiya таможня норма багаж декларация"
+    },
+    {
       id: "vote", cat: "check", sec: "c", status: "limited", icon: "people", url: "/vote/",
       name: { en: "Am I on the voter register?", ir: "Men shayloochulardın tizmesindebi?", ru: "Есть ли я в списке избирателей?" },
       desc: { en: "Your entry and precinct for the elections of 2 November 2027.", ir: "2027-jıldın 2-noyabrındagı shayloolor üchün jazuuñuz jana uchastkañız.", ru: "Ваша запись и участок на выборах 2 ноября 2027 года." },
