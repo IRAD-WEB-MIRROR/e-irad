@@ -518,3 +518,19 @@ a.opt.fmp .opn, a.opt.fmp .opd { min-width: 0; overflow-wrap: anywhere; }
   body.ltprint #top, body.ltprint #bottom, body.ltprint .crumbs, body.ltprint .svchead, body.ltprint #lr, body.ltprint .ltcf, body.ltprint .help { display: none !important; }
   body.ltprint .ltcert { border-color: #000; margin: 0; }
 }
+
+/* Printed copies of form and service pages: a grey COPY stamp and an empty box for the receiving office.
+   Print only; the screen is unchanged. */
+@media print {
+  body:is([data-page="service"], [data-page="forms"], [data-page="applications"], [data-page="appeals"], [data-page="census"], [data-page="procedure"]) { position: relative; }
+  body:is([data-page="service"], [data-page="forms"], [data-page="applications"], [data-page="appeals"], [data-page="census"], [data-page="procedure"])::before {
+    content: "KÖCHÜRMÖ\A COPY · КОПИЯ"; white-space: pre; position: absolute; top: 40mm; right: 12mm; z-index: 6;
+    transform: rotate(-9deg); border: 3px double #8a8a8a; border-radius: 3px; padding: 2px 10px 3px; color: #8a8a8a;
+    font: 700 15pt/1.15 var(--font); letter-spacing: .14em; text-align: center; opacity: .85; pointer-events: none;
+  }
+  body:is([data-page="service"], [data-page="forms"], [data-page="applications"], [data-page="appeals"], [data-page="census"], [data-page="procedure"])::after {
+    content: "Kabıl alındı / Received / Принято\A\A «____» __________ 20____\A\A Kattoo nomeri / No. / № ____________\A\A Kolu / Signature / Подпись ________";
+    white-space: pre; position: absolute; top: 4mm; right: 0; z-index: 5; width: 56mm; box-sizing: border-box;
+    border: 1px solid #555; padding: 4px 7px; color: #333; background: #fff; font: 8pt/1.25 var(--font);
+  }
+}
