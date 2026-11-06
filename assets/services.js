@@ -83,6 +83,13 @@ window.E_SERVICES = {
       keywords: "insurance policy motor iradstrakh polis страховка осаго"
     },
     {
+      id: "entry", cat: "other", sec: "c", status: "off", icon: "route",
+      name: { en: "Visas and entry permits for visitors to Irad", ir: "Chet eldik konoktor üchün viza jana kirüü uruksatı", ru: "Визы и разрешения на въезд для иностранцев" },
+      desc: { en: "Who may enter the Zone without a visa, for how long, and how other visitors get an entry permit.", ir: "Zonaga kim vizasız kire alat, kancha möönötkö jana bashka konoktor kirüü uruksatın kantip alat.", ru: "Кто может въехать в Зону без визы, на какой срок и как остальным получить разрешение на въезд." },
+      agency: { en: "Passport and Residence Service, Ministry of Internal Security", ir: "Pasport jana jashoo jayı kızmatı, Ichki koopsuzduk ministrligi", ru: "Служба паспортов и регистрации, Министерство внутренней безопасности" },
+      keywords: "visa entry permit foreigner visitor tourist border arrival viza kirüü виза въезд разрешение иностранец"
+    },
+    {
       id: "crossing", cat: "other", sec: "c", status: "off", icon: "route",
       name: { en: "Crossing the Qara-Chik line", ir: "Kara-Chik liniyasınan ötüü", ru: "Пересечение линии Кара-Чик" },
       desc: { en: "Rules for visitors from the tribal regions and for travel across the line.", ir: "Tooluu aymaktardan kelgender jana liniya arkıluu jol jürüü erejeleri.", ru: "Правила для приезжающих из племенных районов и для поездок через линию." },
