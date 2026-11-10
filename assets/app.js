@@ -344,6 +344,8 @@
     office: { en: "District office", ir: "Aymaktık keñse", ru: "Районный отдел" },
     given: { en: "Given name", ir: "Atı", ru: "Имя" },
     stem: { en: "Family name", ir: "Tegi", ru: "Фамилия" },
+    other: { en: "Other", ir: "Bashka", ru: "Другое" },
+    pick: { en: "Start typing and choose a name from the list.", ir: "Jaza baslañız da tizmeden attı tandañız.", ru: "Начните вводить и выберите имя из списка." },
     form: { en: "The family name is written as your district office writes it: the bare stem in Talas, -ov or -ova in the cities, uulu or kyzy in the districts.", ir: "Tegiñiz aymaktık keñseñiz jazgandayy jazılat: Talasta tamırı gana, shaarlarda -ov je -ova, aymaktarda uulu je kyzy.", ru: "Фамилия пишется так, как её пишет ваш районный отдел: в Таласе основа без окончания, в городах -ов или -ова, в районах уулу или кызы." },
     issue: { en: "Print the slip", ir: "Maalımkattı basuu", ru: "Распечатать справку" },
     title: { en: "Temporary reference slip", ir: "Ubaktıluu maalımkat", ru: "Временная справка" },
@@ -375,8 +377,15 @@
     if (!Z) { box.innerHTML = '<p class="warn">' + esc(t("notFound")) + "</p>"; return; }
     var gi = Z.GIVEN.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
     var si = Z.STEMS.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
-    box.innerHTML = '<form class="flow" id="fsl">' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), sel("slg", gi)) + field("sls", L(SL.stem), sel("sls", si)) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+    /* names are typed with suggestions from the lists; "Other" is offered on both and fails on purpose */
+    function pickBox(id, list) {
+      return '<input id="' + id + '" list="' + id + '-l" autocomplete="off" spellcheck="false"><datalist id="' + id + '-l">' +
+        list.concat([["", L(SL.other)]]).map(function (o) { return '<option value="' + esc(o[1]) + '"></option>'; }).join("") + "</datalist>";
+    }
+    function idx(list, v) { v = v.trim().toLowerCase(); for (var i = 0; i < list.length; i++) if (list[i][1].toLowerCase() === v) return +list[i][0]; return -1; }
+    function isOther(v) { v = v.trim().toLowerCase(); return v === "other" || v === L(SL.other).toLowerCase(); }
+    box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
+      field("slg", L(SL.given), pickBox("slg", gi)) + field("sls", L(SL.stem), pickBox("sls", si)) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
@@ -390,7 +399,19 @@
     if (last && Z.parse(last).ok) $("#slmine").innerHTML = "<h3>" + esc(L(SL.mine)) + "</h3>" + card(last) + where();
     $("#fsl").addEventListener("submit", function (e) {
       noForm(e);
-      var no = Z.make($("#slo").value, +$("#slg").value, +$("#sls").value);
+      var gv = $("#slg").value, sv = $("#sls").value;
+      if (isOther(gv) || isOther(sv)) {
+        $("#slg-err").hidden = $("#sls-err").hidden = true;
+        result('<pre class="slbug">Server Error in \'/services/slip\' Application.\n\nObject reference not set to an instance of an object.\n' +
+          "   at Eirad.Slip.NameRegistry.Resolve(String given, String stem, OfficeCode office) in D:\\build\\eirad\\Slip\\NameRegistry.cs:line 214\n" +
+          "   at Eirad.Slip.SlipController.Issue(SlipRequest req) in D:\\build\\eirad\\Slip\\SlipController.cs:line 88\n\n" +
+          "Version Information: e-Irad Portal 2.3.1 (build 2611)</pre>");
+        return;
+      }
+      var g = idx(gi, gv), f = idx(si, sv);
+      $("#slg-err").textContent = $("#sls-err").textContent = L(SL.pick);
+      if (!need("slg", function () { return g >= 0; }) || !need("sls", function () { return f >= 0; })) return;
+      var no = Z.make($("#slo").value, g, f);
       Z.store(no);
       $("#slmine").innerHTML = "";
       result(card(no) + '<p class="tiny">' + esc(L(SL.keep)) + '</p><p><button type="button" class="btn ghost" id="slprint">' + esc(L(SL.print)) + "</button></p>" + where());
