@@ -348,7 +348,7 @@
     endings: [{ en: "bare stem", ir: "tamırı gana", ru: "основа без окончания" }, { en: "-ov / -ova / -ev", ir: "-ov / -ova / -ev", ru: "-ов / -ова / -ев" }, { en: "uulu / kyzy", ir: "uulu / kyzy", ru: "уулу / кызы" }],
     other: { en: "Other / not found", ir: "Bashka / tabılgan jok", ru: "Другое / не найдено" },
     pick: { en: "Start typing and choose a name from the list.", ir: "Jaza baslañız da tizmeden attı tandañız.", ru: "Начните вводить и выберите имя из списка." },
-    form: { en: "Type the root of your family name, then choose how it is written in your registration: the bare stem (usual in Talas), -ov or -ova (usual in the cities), or uulu or kyzy (usual in the districts).", ir: "Tegiñizdin tamırın teriñiz, andan kiyin kattoodo kanday jazılganın tandañız: tamırı gana (Talasta köp), -ov je -ova (shaarlarda köp), je uulu, kyzy (aymaktarda köp).", ru: "Введите основу фамилии и выберите, как она записана при регистрации: основа без окончания (обычно в Таласе), -ов или -ова (обычно в городах), уулу или кызы (обычно в районах)." },
+    form: { en: "Type the root of your family name, then choose how it is written in your registration: the bare stem, -ov or -ova, or uulu or kyzy.", ir: "Tegiñizdin tamırın teriñiz, andan kiyin kattoodo kanday jazılganın tandañız: tamırı gana, -ov je -ova, je uulu, kyzy.", ru: "Введите основу фамилии и выберите, как она записана при регистрации: основа без окончания, -ов или -ова, уулу или кызы." },
     issue: { en: "Print the slip", ir: "Maalımkattı basuu", ru: "Распечатать справку" },
     title: { en: "Temporary reference slip", ir: "Ubaktıluu maalımkat", ru: "Временная справка" },
     no: { en: "Slip No.", ir: "Maalımkat No.", ru: "Справка №" },
@@ -424,7 +424,7 @@
       ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
     }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
