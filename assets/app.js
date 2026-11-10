@@ -424,7 +424,7 @@
       ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
     }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + '<fieldset class="fld slradio" id="slf"><legend>' + esc(L(SL.ending)) + "</legend>" + Z.FORMS.map(function (f, i) { return '<label><input type="radio" name="slf" value="' + f + '"> <span>' + esc(L(SL.endings[i])) + "</span></label>"; }).join("") + "</fieldset>" + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
@@ -438,15 +438,14 @@
     combo("slg", gi); combo("sls", si);
     /* the ending list shows the name written each way; it starts on the office's usual form */
     function forms() {
-      var g = idx(gi, $("#slg").value), f = idx(si, $("#sls").value), keep = $("#slf").value;
-      $$("#slf option").forEach(function (o, i) {
+      var g = idx(gi, $("#slg").value), f = idx(si, $("#sls").value);
+      $$("#slf label span").forEach(function (o, i) {
         if (f < 0) { o.textContent = L(SL.endings[i]); return; }
         var st = Z.STEMS[f], m = Z.surnameOf(st, Z.FORMS[i], "m"), w = Z.surnameOf(st, Z.FORMS[i], "f");
         o.textContent = g >= 0 ? Z.surnameOf(st, Z.FORMS[i], Z.sexOf(g)) : (m === w ? m : m + " / " + w);
       });
-      $("#slf").value = keep;
     }
-    function usual() { var D = Z.DISTRICTS.filter(function (d) { return d.code === $("#slo").value; })[0]; if (D) $("#slf").value = D.form; }
+    function usual() { var D = Z.DISTRICTS.filter(function (d) { return d.code === $("#slo").value; })[0]; if (D) $("#slf input[value=" + D.form + "]").checked = true; }
     usual(); forms();
     $("#slo").addEventListener("change", usual);
     ["slg", "sls"].forEach(function (id) { $("#" + id).addEventListener("change", forms); $("#" + id).addEventListener("input", forms); });
@@ -458,7 +457,7 @@
       var g = idx(gi, gv), f = idx(si, sv);
       $("#slg-err").textContent = $("#sls-err").textContent = L(SL.pick);
       if (!need("slg", function () { return g >= 0; }) || !need("sls", function () { return f >= 0; })) return;
-      var no = Z.make($("#slo").value, g, f, null, null, $("#slf").value);
+      var no = Z.make($("#slo").value, g, f, null, null, $("#slf input:checked").value);
       Z.store(no);
       $("#slmine").innerHTML = "";
       result(card(no) + '<p class="tiny">' + esc(L(SL.keep)) + '</p><p><button type="button" class="btn ghost" id="slprint">' + esc(L(SL.print)) + "</button></p>" + where());

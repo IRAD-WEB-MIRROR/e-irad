@@ -273,6 +273,9 @@ a.opt:hover { background: #fff; border-color: var(--blue); }
 .ok { background: var(--ok-bg); color: var(--ok); padding: 6px 10px; border: 1px solid #b9dcc7; }
 .slbug { font: 12px/1.45 Consolas, "Courier New", monospace; background: #ffffcc; color: #900; border: 1px solid #c00; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .slcombo { position: relative; }
+.slradio { border: 0; padding: 0; margin: 0 0 11px; }
+.slradio legend { font-weight: 600; font-size: .86rem; margin-bottom: 3px; padding: 0; }
+.slradio label { display: flex; gap: 8px; align-items: center; padding: 2px 0; font-weight: 400; font-size: inherit; margin: 0; }
 .slopts { position: absolute; left: 0; right: 0; top: 100%; z-index: 5; margin: 0; padding: 0; list-style: none; max-height: 15em; overflow-y: auto; background: #fff; border: 1px solid #a9b3bc; border-top: 0; box-shadow: 0 3px 8px #0002; }
 .slopts[hidden] { display: none; }
 .slopts li { padding: 5px 8px; cursor: pointer; }
