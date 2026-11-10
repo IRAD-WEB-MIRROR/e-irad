@@ -7,7 +7,7 @@
    Number: CC-YYMMDD-GGSS-NNNK
      CC      district office code (as the passport offices: TL, NZ, IJ, KA, KB, MK, TK, BK, TO, SB)
      YYMMDD  date of issue (a slip is valid 90 days)
-     GG      given name, index into GIVEN (00-29 men, 30-59 women)
+     GG      given name, index into GIVEN (00-29 men, 30-59 women, 60-79 men, 80-99 women)
      SS      surname, index into STEMS
      NNN     serial
      K       check digit (Luhn over the office letters' values and the digits)
@@ -43,13 +43,25 @@
     "Nurbek", "Nurlan", "Ruslan", "Samat", "Talant", "Timur", "Ulan", "Urmat", "Adilet", "Azat",
     "Aigul", "Aida", "Aijamal", "Ainura", "Aisulu", "Aizada", "Akmaral", "Anara", "Asel", "Bermet",
     "Baktygul", "Chynara", "Cholpon", "Damira", "Dinara", "Elmira", "Gulmira", "Gulnara", "Gulzat", "Jamila",
-    "Jyldyz", "Kanykei", "Kunduz", "Mairam", "Meerim", "Nazgul", "Nurgul", "Saltanat", "Venera", "Zarina"
+    "Jyldyz", "Kanykei", "Kunduz", "Mairam", "Meerim", "Nazgul", "Nurgul", "Saltanat", "Venera", "Zarina",
+    /* 60-79 men, 80-99 women (added 10 Nov 2026) */
+    "Almazbek", "Amanbek", "Asylbek", "Bakytbek", "Kanatbek", "Nurdin", "Aidar", "Akylbek", "Askar", "Baktybek",
+    "Dastan", "Erbol", "Kairat", "Medet", "Melis", "Mukhtar", "Omurbek", "Sanjar", "Tilek", "Ulukbek",
+    "Aizhan", "Elnura", "Nazira", "Nurjamal", "Roza", "Ainagul", "Aliya", "Begimai", "Burulai", "Dilbar",
+    "Gulbara", "Jypar", "Mahabat", "Nurila", "Rahat", "Saadat", "Sezim", "Tolkun", "Aigerim", "Aiperi"
   ];
   var STEMS = [
     "Abyl", "Asan", "Asyl", "Atakan", "Bakir", "Beishenaly", "Bekmurat", "Bolot", "Choro", "Esen",
     "Imankul", "Kadyr", "Kalmat", "Kenesbay", "Kenje", "Kudaiberdi", "Moldo", "Moldokmat", "Nurmat", "Orozbek",
     "Sadyk", "Temir", "Toktobolot", "Turdumat", "Abdyrakhman", "Kemelbek", "Torobek", "Usubaly", "Baatyr", "Medet",
-    "Ermat", "Kamchy", "Mamat", "Muratbek", "Tentek", "Umot"
+    "Ermat", "Kamchy", "Mamat", "Muratbek", "Tentek", "Umot",
+    "Akmat", "Amanbek", "Asanaly", "Beishen", "Borubai", "Daniyar", "Eshmat", "Ergesh", "Imanaly", "Jusupbek",
+    "Kalys", "Kasym", "Mamyt", "Mambet", "Omur", "Ormon", "Osmon", "Sagyn", "Sarybai", "Sultanaly",
+    "Sydyk", "Tashtan", "Tilek", "Tokon", "Toktosun", "Tursun", "Usen", "Uson", "Joldoshbek", "Kalmurza",
+    "Kanybek", "Karabek", "Rysbek", "Taiyr", "Tashbolot", "Akyl", "Bekbolot", "Kemel", "Kapar", "Kubat",
+    "Alymbek", "Bekmurza", "Duishen", "Jumabai", "Jumaly", "Kerimbek", "Orozaly", "Saparbek", "Tynaly", "Myrzakul",
+    "Beksultan", "Nurbek", "Sheraly", "Jeenbek", "Arstan", "Junus", "Yakup", "Ömür", "Bayaly", "Dyikan",
+    "Nazarbek", "Oskon", "Tagai", "Turgunbai"
   ];
   /* streets from Iradenergo's planned-works table, so the works at a slip holder's address can be found */
   var STREETS = {
@@ -130,7 +142,7 @@
   }
 
   function person(slip) {
-    var h = slip.h, D = slip.district, sex = slip.gi >= 30 ? "f" : "m";
+    var h = slip.h, D = slip.district, sex = (slip.gi >= 30 && slip.gi < 60) || slip.gi >= 80 ? "f" : "m";
     var given = GIVEN[slip.gi], stem = STEMS[slip.si], surname;
     if (D.form === "stem") surname = stem;
     else if (D.form === "ov") surname = ov(stem, sex);
