@@ -9,7 +9,8 @@
      YYMMDD  date of issue (a slip is valid 90 days)
      GG      given name, index into GIVEN (00-29 men, 30-59 women, 60-79 men, 80-99 women)
      SS      surname, index into STEMS
-     NNN     serial
+     NNN     serial; from 11 Nov 2026 also the family name's form, chosen on the slip page: serial % 3 =
+             0 bare stem, 1 -ov/-ova/-ev, 2 uulu/kyzy. Slips dated earlier take the district's usual form.
      K       check digit (Luhn over the office letters' values and the digits)
 
    Use on a site:
@@ -79,6 +80,7 @@
   };
   var EMPLOYERS = ["Talas City Administration", "Nurzhan City Administration", "Irad Pochtasy", "Iradenergo", "Talas State University", "Ministry of Education (a city school)", "Ministry of Health (a polyclinic)", "Irad Railways", "State Tax Service", "Gidromet"];
   var VALID_DAYS = 90;
+  var FORMS = ["stem", "ov", "pat"], FORM_FROM = Date.UTC(2026, 10, 11);
 
   var T = {
     label: { en: "Temporary reference slip No.", ir: "Ubaktıluu maalımkat nomeri", ru: "Номер временной справки" },
@@ -115,9 +117,9 @@
   }
 
   /* make a slip number; issued defaults to today (Irad time) */
-  function make(code, gi, si, issued, serial) {
+  function make(code, gi, si, issued, serial, form) {
     issued = issued || today();
-    if (serial == null) serial = Math.floor(Math.random() * 1000);
+    if (serial == null) serial = form == null ? Math.floor(Math.random() * 1000) : 3 * Math.floor(Math.random() * 333) + FORMS.indexOf(form);
     var y = issued.getUTCFullYear() % 100, m = issued.getUTCMonth() + 1, d = issued.getUTCDate();
     var body = p2(y) + p2(m) + p2(d) + p2(gi) + p2(si) + p3(serial);
     var k = luhn(letters(code) + body);
@@ -141,12 +143,12 @@
     return slip;
   }
 
+  function sexOf(gi) { return (gi >= 30 && gi < 60) || gi >= 80 ? "f" : "m"; }
+  function surnameOf(stem, form, sex) { return form === "stem" ? stem : form === "ov" ? ov(stem, sex) : stem + (sex === "f" ? " kyzy" : " uulu"); }
   function person(slip) {
-    var h = slip.h, D = slip.district, sex = (slip.gi >= 30 && slip.gi < 60) || slip.gi >= 80 ? "f" : "m";
-    var given = GIVEN[slip.gi], stem = STEMS[slip.si], surname;
-    if (D.form === "stem") surname = stem;
-    else if (D.form === "ov") surname = ov(stem, sex);
-    else surname = stem + (sex === "f" ? " kyzy" : " uulu");
+    var h = slip.h, D = slip.district, sex = sexOf(slip.gi);
+    var given = GIVEN[slip.gi], stem = STEMS[slip.si];
+    var surname = surnameOf(stem, slip.issued.getTime() >= FORM_FROM ? FORMS[slip.serial % 3] : D.form, sex);
     var born = 1958 + (h % 46), bm = 1 + (hash("bm" + slip.no) % 12), bd = 1 + (hash("bd" + slip.no) % 28);
     var streets = STREETS[slip.code] || STREETS.other, street = pick(streets, hash("st" + slip.no));
     var house = 1 + (hash("hs" + slip.no) % 96), flat = D.rural || hash("fl" + slip.no) % 3 === 0 ? 0 : 1 + (hash("ft" + slip.no) % 80);
@@ -355,7 +357,7 @@
     if (inp.value && opts.auto) f.dispatchEvent(new Event("submit"));
   }
 
-  var api = { DISTRICTS: DISTRICTS, GIVEN: GIVEN, STEMS: STEMS, VALID_DAYS: VALID_DAYS, hash: hash, today: today, make: make, parse: parse, person: person, power: power, bank: bank, vehicle: vehicle, parcel: parcel, ticket: ticket, library: library, queue: queue, ov: ov, mount: mount, kinds: KINDS, store: store,
+  var api = { DISTRICTS: DISTRICTS, GIVEN: GIVEN, STEMS: STEMS, FORMS: FORMS, sexOf: sexOf, surnameOf: surnameOf, VALID_DAYS: VALID_DAYS, hash: hash, today: today, make: make, parse: parse, person: person, power: power, bank: bank, vehicle: vehicle, parcel: parcel, ticket: ticket, library: library, queue: queue, ov: ov, mount: mount, kinds: KINDS, store: store,
               fmt: { som: som, dmy: dmy, long: long } };
   window.IradSlip = api;
 

@@ -344,9 +344,11 @@
     office: { en: "District office", ir: "Aymaktık keñse", ru: "Районный отдел" },
     given: { en: "Given name", ir: "Atı", ru: "Имя" },
     stem: { en: "Family name", ir: "Tegi", ru: "Фамилия" },
+    ending: { en: "Family name as registered", ir: "Kattalgan tegi", ru: "Фамилия по регистрации" },
+    endings: [{ en: "bare stem", ir: "tamırı gana", ru: "основа без окончания" }, { en: "-ov / -ova / -ev", ir: "-ov / -ova / -ev", ru: "-ов / -ова / -ев" }, { en: "uulu / kyzy", ir: "uulu / kyzy", ru: "уулу / кызы" }],
     other: { en: "Other / not found", ir: "Bashka / tabılgan jok", ru: "Другое / не найдено" },
     pick: { en: "Start typing and choose a name from the list.", ir: "Jaza baslañız da tizmeden attı tandañız.", ru: "Начните вводить и выберите имя из списка." },
-    form: { en: "The family name is written as your district office writes it: the bare stem in Talas, -ov or -ova in the cities, uulu or kyzy in the districts.", ir: "Tegiñiz aymaktık keñseñiz jazgandayy jazılat: Talasta tamırı gana, shaarlarda -ov je -ova, aymaktarda uulu je kyzy.", ru: "Фамилия пишется так, как её пишет ваш районный отдел: в Таласе основа без окончания, в городах -ов или -ова, в районах уулу или кызы." },
+    form: { en: "Type the root of your family name, then choose how it is written in your registration: the bare stem (usual in Talas), -ov or -ova (usual in the cities), or uulu or kyzy (usual in the districts).", ir: "Tegiñizdin tamırın teriñiz, andan kiyin kattoodo kanday jazılganın tandañız: tamırı gana (Talasta köp), -ov je -ova (shaarlarda köp), je uulu, kyzy (aymaktarda köp).", ru: "Введите основу фамилии и выберите, как она записана при регистрации: основа без окончания (обычно в Таласе), -ов или -ова (обычно в городах), уулу или кызы (обычно в районах)." },
     issue: { en: "Print the slip", ir: "Maalımkattı basuu", ru: "Распечатать справку" },
     title: { en: "Temporary reference slip", ir: "Ubaktıluu maalımkat", ru: "Временная справка" },
     no: { en: "Slip No.", ir: "Maalımkat No.", ru: "Справка №" },
@@ -409,7 +411,7 @@
         cur = (i + rows.length) % rows.length; li[cur].classList.add("on"); li[cur].scrollIntoView({ block: "nearest" });
         inp.setAttribute("aria-activedescendant", li[cur].id);
       }
-      function choose(i) { inp.value = rows[i]; open(false); $("#" + id + "-err").hidden = true; inp.removeAttribute("aria-invalid"); if (i === rows.length - 1) bug(); }
+      function choose(i) { inp.value = rows[i]; open(false); inp.dispatchEvent(new Event("change")); $("#" + id + "-err").hidden = true; inp.removeAttribute("aria-invalid"); if (i === rows.length - 1) bug(); }
       inp.addEventListener("input", draw);
       inp.addEventListener("focus", draw);
       inp.addEventListener("click", function () { if (ul.hidden) draw(); });
@@ -422,7 +424,7 @@
       ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
     }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
@@ -434,6 +436,20 @@
     function where() { return "<h4>" + esc(L(SL.where)) + '</h4><ul class="plain">' + SL.places.map(function (p) { return '<li><a href="' + p[0] + '">' + esc(L(p[1])) + "</a></li>"; }).join("") + "</ul>"; }
     var last = Z.store();
     combo("slg", gi); combo("sls", si);
+    /* the ending list shows the name written each way; it starts on the office's usual form */
+    function forms() {
+      var g = idx(gi, $("#slg").value), f = idx(si, $("#sls").value), keep = $("#slf").value;
+      $$("#slf option").forEach(function (o, i) {
+        if (f < 0) { o.textContent = L(SL.endings[i]); return; }
+        var st = Z.STEMS[f], m = Z.surnameOf(st, Z.FORMS[i], "m"), w = Z.surnameOf(st, Z.FORMS[i], "f");
+        o.textContent = g >= 0 ? Z.surnameOf(st, Z.FORMS[i], Z.sexOf(g)) : (m === w ? m : m + " / " + w);
+      });
+      $("#slf").value = keep;
+    }
+    function usual() { var D = Z.DISTRICTS.filter(function (d) { return d.code === $("#slo").value; })[0]; if (D) $("#slf").value = D.form; }
+    usual(); forms();
+    $("#slo").addEventListener("change", usual);
+    ["slg", "sls"].forEach(function (id) { $("#" + id).addEventListener("change", forms); $("#" + id).addEventListener("input", forms); });
     if (last && Z.parse(last).ok) $("#slmine").innerHTML = "<h3>" + esc(L(SL.mine)) + "</h3>" + card(last) + where();
     $("#fsl").addEventListener("submit", function (e) {
       noForm(e);
@@ -442,7 +458,7 @@
       var g = idx(gi, gv), f = idx(si, sv);
       $("#slg-err").textContent = $("#sls-err").textContent = L(SL.pick);
       if (!need("slg", function () { return g >= 0; }) || !need("sls", function () { return f >= 0; })) return;
-      var no = Z.make($("#slo").value, g, f);
+      var no = Z.make($("#slo").value, g, f, null, null, $("#slf").value);
       Z.store(no);
       $("#slmine").innerHTML = "";
       result(card(no) + '<p class="tiny">' + esc(L(SL.keep)) + '</p><p><button type="button" class="btn ghost" id="slprint">' + esc(L(SL.print)) + "</button></p>" + where());
