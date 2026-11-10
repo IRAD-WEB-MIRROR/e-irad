@@ -339,12 +339,66 @@
       : '<a class="btn" href="/census/">' + esc(L(today() > new Date("2026-11-30T00:00:00Z") ? { en: "Check a confirmation", ir: "Tastıktoonu tekshirüü", ru: "Проверить подтверждение" } : { en: "Online questionnaire", ir: "Onlayn suroo-joop", ru: "Онлайн-анкета" })) + "</a>") + "</div>";
   };
 
+  /* temporary reference slip (X16): issued here, accepted by the offices that load assets/slip.js */
+  var SL = {
+    office: { en: "District office", ir: "Aymaktık keñse", ru: "Районный отдел" },
+    given: { en: "Given name", ir: "Atı", ru: "Имя" },
+    stem: { en: "Family name", ir: "Tegi", ru: "Фамилия" },
+    form: { en: "The family name is written as your district office writes it: the bare stem in Talas, -ov or -ova in the cities, uulu or kyzy in the districts.", ir: "Tegiñiz aymaktık keñseñiz jazgandayy jazılat: Talasta tamırı gana, shaarlarda -ov je -ova, aymaktarda uulu je kyzy.", ru: "Фамилия пишется так, как её пишет ваш районный отдел: в Таласе основа без окончания, в городах -ов или -ова, в районах уулу или кызы." },
+    issue: { en: "Print the slip", ir: "Maalımkattı basuu", ru: "Распечатать справку" },
+    title: { en: "Temporary reference slip", ir: "Ubaktıluu maalımkat", ru: "Временная справка" },
+    no: { en: "Slip No.", ir: "Maalımkat No.", ru: "Справка №" },
+    name: { en: "Name", ir: "Atı-jönü", ru: "Ф. И." },
+    born: { en: "Year of birth", ir: "Tuulgan jılı", ru: "Год рождения" },
+    addr: { en: "Registered address", ir: "Kattalgan darek", ru: "Адрес регистрации" },
+    issued: { en: "Issued", ir: "Berildi", ru: "Выдана" },
+    valid: { en: "Valid until", ir: "Möönötü", ru: "Действительна до" },
+    print: { en: "Print", ir: "Basuu", ru: "Печать" },
+    stamp: { en: "Valid without a stamp. Accepted in place of the e-Irad ID card until cards are issued (Notice No. 3).", ir: "Möörsüz jaraktuu. e-Irad ID kartası berilgenge cheyin anın ordunda kabıl alınat (3-Bildirüü).", ru: "Действительна без печати. Принимается вместо карты e-Irad ID до начала их выдачи (Извещение № 3)." },
+    where: { en: "Where the slip is accepted", ir: "Maalımkat kayda kabıl alınat", ru: "Где принимается справка" },
+    mine: { en: "Your last slip", ir: "Akırkı maalımkatıñız", ru: "Ваша последняя справка" },
+    keep: { en: "Write the number down: it is the only copy. The slip number says who you are on every office's site; nothing is sent to us.", ir: "Nomerdi jazıp alıñız: al jalgız nuskası. Maalımkat nomeri ar bir mekemenin saytında siz kim ekeniñizdi aytat; bizge esh nerse jönötülböyt.", ru: "Запишите номер: это единственный экземпляр. По номеру справки вас узнают на сайте любого учреждения; нам ничего не отправляется." },
+    places: [
+      ["/services/electricity/", { en: "e-Irad: electricity bill", ir: "e-Irad: elektr üchün esep", ru: "e-Irad: счёт за электроэнергию" }],
+      ["https://energo.iradgov.org/cabinet.html", { en: "Iradenergo: personal account", ir: "Iradenergo: jeke kabinet", ru: "«Ирадэнерго»: личный кабинет" }],
+      ["https://talasbank.net/private.html#slip", { en: "Talasbank: your current account", ir: "Talasbank: agımdagı esebiñiz", ru: "Таласбанк: ваш текущий счёт" }]
+    ]
+  };
+  FLOWS.slip = function (box) {
+    var Z = window.IradSlip;
+    if (!Z) { box.innerHTML = '<p class="warn">' + esc(t("notFound")) + "</p>"; return; }
+    var gi = Z.GIVEN.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
+    var si = Z.STEMS.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
+    box.innerHTML = '<form class="flow" id="fsl">' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
+      field("slg", L(SL.given), sel("slg", gi)) + field("sls", L(SL.stem), sel("sls", si)) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
+    function card(no) {
+      var s = Z.parse(no); if (!s.no) return "";
+      var P = Z.person(s);
+      return '<div class="ticket slip"><div class="tno"><span>' + esc(L(SL.title)) + " · " + esc(L(SL.no)) + "</span><b>" + esc(s.no) + "</b></div>" +
+        kv([[L(SL.name), esc(P.full)], [L(SL.born), String(P.year)], [L(SL.addr), esc(P.address)], [L(SL.issued), esc(fmtD(s.issued))], [L(SL.valid), esc(fmtD(s.until))]]) +
+        '<p class="tiny">' + esc(L(SL.stamp)) + "</p></div>";
+    }
+    function where() { return "<h4>" + esc(L(SL.where)) + '</h4><ul class="plain">' + SL.places.map(function (p) { return '<li><a href="' + p[0] + '">' + esc(L(p[1])) + "</a></li>"; }).join("") + "</ul>"; }
+    var last = Z.store();
+    if (last && Z.parse(last).ok) $("#slmine").innerHTML = "<h3>" + esc(L(SL.mine)) + "</h3>" + card(last) + where();
+    $("#fsl").addEventListener("submit", function (e) {
+      noForm(e);
+      var no = Z.make($("#slo").value, +$("#slg").value, +$("#sls").value);
+      Z.store(no);
+      $("#slmine").innerHTML = "";
+      result(card(no) + '<p class="tiny">' + esc(L(SL.keep)) + '</p><p><button type="button" class="btn ghost" id="slprint">' + esc(L(SL.print)) + "</button></p>" + where());
+      $("#slprint").addEventListener("click", function () { window.print(); });
+    });
+  };
+
   /* electricity and water */
   var BILL = {
     network: { en: "Network", ir: "Tarmak", ru: "Сеть" },
     nets: [["tl", { en: "Talas Electric Networks", ir: "Talas elektr tarmaktarı", ru: "Таласские электросети" }], ["nz", { en: "Nurzhan Electric Networks", ir: "Nurzhan elektr tarmaktarı", ru: "Нуржанские электросети" }], ["dist", { en: "Iradenergo district service (Iyık Janyl and the districts)", ir: "Iradenergonun aymaktık kızmatı (Iyık Janyl jana aymaktar)", ru: "Районная служба «Ирадэнерго» (Ийык-Джаныл и районы)" }]],
     acct: { en: "Personal account number", ir: "Jeke esep nomeri", ru: "Номер лицевого счёта" },
-    acctPh: { en: "8 to 12 digits, from your last bill", ir: "8den 12ge cheyin sıfra, akırkı eseptten", ru: "от 8 до 12 цифр, с последней квитанции" },
+    acctPh: { en: "8 to 12 digits, or your temporary slip No.", ir: "8den 12ge cheyin sıfra, je ubaktıluu maalımkat nomeri", ru: "8–12 цифр или номер временной справки" },
+    slipOld: { en: "This temporary slip has expired. Print a new one under Temporary reference slip.", ir: "Bul ubaktıluu maalımkattın möönötü bütkön. Janısın «Ubaktıluu maalımkat» bölümünön basıp alıñız.", ru: "Срок действия временной справки истёк. Распечатайте новую в разделе «Временная справка»." },
     acctBad: { en: "The account number has 8 to 12 digits and is printed at the top of your bill.", ir: "Esep nomeri 8den 12ge cheyin sıfradan turat jana eseptin jogorkusunda basılgan.", ru: "Номер лицевого счёта состоит из 8–12 цифр и напечатан вверху квитанции." },
     period: { en: "Billing period", ir: "Esep mezgili", ru: "Расчётный период" },
     readings: { en: "Meter readings", ir: "Hisoochtun körsötküchü", ru: "Показания счётчика" },
@@ -371,9 +425,10 @@
       field("acct", L(BILL.acct), inp("acct", L(BILL.acctPh), ' inputmode="numeric" maxlength="14"')) + '<button class="btn" type="submit">' + esc(L(BILL.show)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div>';
     $("#fel").addEventListener("submit", function (e) {
       noForm(e);
-      var a = $("#acct").value.replace(/\D/g, "");
-      if (!need("acct", function () { return a.length >= 8 && a.length <= 12; })) { $("#acct-err").textContent = L(BILL.acctBad); return; }
-      var h = hash("el" + $("#net").value + a);
+      var a = $("#acct").value.replace(/\D/g, ""), net = $("#net").value, sp = window.IradSlip && /[a-z]/i.test($("#acct").value) ? window.IradSlip.parse($("#acct").value) : null;
+      if (sp && sp.ok) { var pw = window.IradSlip.power(sp); a = pw.acct; net = pw.net; $("#net").value = net; $("#acct").value = a; }
+      if (!need("acct", function () { return a.length >= 8 && a.length <= 12; })) { $("#acct-err").textContent = L(sp && sp.err === "expired" ? BILL.slipOld : BILL.acctBad); return; }
+      var h = hash("el" + net + a);
       if (h % 13 === 0) { result('<p class="warn">' + esc(t("notFound")) + "</p>"); return; }
       var prev = 10000 + (h % 80000), kwh = 140 + (h % 260), tariff = 0.32, arr = h % 7 === 0 ? Math.round((90 + h % 70) * tariff * 100) / 100 * 1 : 0;
       var amt = Math.round(kwh * tariff * 100) / 100, total = amt + arr;

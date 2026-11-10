@@ -18,6 +18,13 @@ window.E_SERVICES = {
   /* sec: the section(s) of the portal a service belongs to, first one is its home: b = For businesses, c = For citizens */
   list: [
     {
+      id: "slip", cat: "people", sec: "c", status: "ok", icon: "id",
+      name: { en: "Temporary reference slip", ir: "Ubaktıluu maalımkat", ru: "Временная справка" },
+      desc: { en: "Print a numbered slip that offices accept in place of the e-Irad ID card until cards are issued.", ir: "e-Irad ID kartası berilgenge cheyin mekemeler anın ordunda kabıl alganı nomerlüü maalımkattı basıp alıñız.", ru: "Распечатайте номерную справку, которую учреждения принимают вместо карты e-Irad ID до начала их выдачи." },
+      agency: { en: "Digital Services Directorate, Department of Infrastructure and Communications", ir: "Sanariptik kızmattar bashkarmalıgı, Infrastruktura jana baylanısh departamenti", ru: "Управление цифровых услуг, Департамент инфраструктуры и связи" },
+      keywords: "slip temporary reference id card substitute maalımkat справка временная number"
+    },
+    {
       id: "passport", cat: "people", sec: "c", status: "limited", icon: "id",
       name: { en: "Passport and ID card queue", ir: "Pasport jana ID-karta kezegi", ru: "Очередь на паспорт и ID-карту" },
       desc: { en: "Take a number for your passport office and see your place in the queue.", ir: "Pasport bölümünö kezek nomerin alıp, kezektegi ordunuzdu köruñüz.", ru: "Возьмите номер в паспортный стол и узнайте своё место в очереди." },
