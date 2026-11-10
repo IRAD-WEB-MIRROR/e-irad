@@ -424,7 +424,7 @@
       ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
     }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + field("slf", L(SL.ending), sel("slf", Z.FORMS.map(function (f, i) { return [f, L(SL.endings[i])]; }))) +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
