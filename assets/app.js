@@ -344,7 +344,7 @@
     office: { en: "District office", ir: "Aymaktık keñse", ru: "Районный отдел" },
     given: { en: "Given name", ir: "Atı", ru: "Имя" },
     stem: { en: "Family name", ir: "Tegi", ru: "Фамилия" },
-    other: { en: "Other", ir: "Bashka", ru: "Другое" },
+    other: { en: "Other / not found", ir: "Bashka / tabılgan jok", ru: "Другое / не найдено" },
     pick: { en: "Start typing and choose a name from the list.", ir: "Jaza baslañız da tizmeden attı tandañız.", ru: "Начните вводить и выберите имя из списка." },
     form: { en: "The family name is written as your district office writes it: the bare stem in Talas, -ov or -ova in the cities, uulu or kyzy in the districts.", ir: "Tegiñiz aymaktık keñseñiz jazgandayy jazılat: Talasta tamırı gana, shaarlarda -ov je -ova, aymaktarda uulu je kyzy.", ru: "Фамилия пишется так, как её пишет ваш районный отдел: в Таласе основа без окончания, в городах -ов или -ова, в районах уулу или кызы." },
     issue: { en: "Print the slip", ir: "Maalımkattı basuu", ru: "Распечатать справку" },
@@ -377,15 +377,52 @@
     if (!Z) { box.innerHTML = '<p class="warn">' + esc(t("notFound")) + "</p>"; return; }
     var gi = Z.GIVEN.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
     var si = Z.STEMS.map(function (n, i) { return [String(i), n]; }).sort(function (a, b) { return a[1] < b[1] ? -1 : 1; });
-    /* names are typed with suggestions from the lists; "Other" is offered on both and fails on purpose */
-    function pickBox(id, list) {
-      return '<input id="' + id + '" list="' + id + '-l" autocomplete="off" spellcheck="false"><datalist id="' + id + '-l">' +
-        list.concat([["", L(SL.other)]]).map(function (o) { return '<option value="' + esc(o[1]) + '"></option>'; }).join("") + "</datalist>";
+    /* names: a typed box with a full drop-down of matching names; the last row is always "Other / not found",
+       which fails on purpose (Chief, 10 Nov 2026: an intentional bug, don't fix it) */
+    function pickBox(id) {
+      return '<div class="slcombo"><input id="' + id + '" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="' + id + '-l" autocomplete="off" spellcheck="false">' +
+        '<ul class="slopts" id="' + id + '-l" role="listbox" hidden></ul></div>';
     }
     function idx(list, v) { v = v.trim().toLowerCase(); for (var i = 0; i < list.length; i++) if (list[i][1].toLowerCase() === v) return +list[i][0]; return -1; }
-    function isOther(v) { v = v.trim().toLowerCase(); return v === "other" || v === L(SL.other).toLowerCase(); }
+    function isOther(v) { return v.trim().toLowerCase() === L(SL.other).toLowerCase(); }
+    function bug() {
+      $("#slg-err").hidden = $("#sls-err").hidden = true;
+      result('<pre class="slbug">Server Error in \'/services/slip\' Application.\n\nObject reference not set to an instance of an object.\n' +
+        "   at Eirad.Slip.NameRegistry.Resolve(String given, String stem, OfficeCode office) in D:\\build\\eirad\\Slip\\NameRegistry.cs:line 214\n" +
+        "   at Eirad.Slip.SlipController.Issue(SlipRequest req) in D:\\build\\eirad\\Slip\\SlipController.cs:line 88\n\n" +
+        "Version Information: e-Irad Portal 2.3.1 (build 2611)</pre>");
+    }
+    function combo(id, list) {
+      var inp = $("#" + id), ul = $("#" + id + "-l"), cur = -1, rows = [];
+      function draw() {
+        var q = inp.value.trim().toLowerCase();
+        if (!q) { rows = []; cur = -1; ul.innerHTML = ""; open(false); return; }
+        var pre = [], mid = [];
+        list.forEach(function (o) { var n = o[1].toLowerCase(); if (n.indexOf(q) === 0) pre.push(o[1]); else if (n.indexOf(q) > 0) mid.push(o[1]); });
+        rows = pre.concat(mid, [L(SL.other)]); cur = -1;
+        ul.innerHTML = rows.map(function (n, i) { return '<li role="option" id="' + id + "-o" + i + '"' + (i === rows.length - 1 ? ' class="slother"' : "") + ">" + esc(n) + "</li>"; }).join("");
+        open(true);
+      }
+      function open(on) { ul.hidden = !on; inp.setAttribute("aria-expanded", on); if (!on) inp.removeAttribute("aria-activedescendant"); }
+      function mark(i) {
+        var li = ul.children; if (cur >= 0 && li[cur]) li[cur].classList.remove("on");
+        cur = (i + rows.length) % rows.length; li[cur].classList.add("on"); li[cur].scrollIntoView({ block: "nearest" });
+        inp.setAttribute("aria-activedescendant", li[cur].id);
+      }
+      function choose(i) { inp.value = rows[i]; open(false); $("#" + id + "-err").hidden = true; inp.removeAttribute("aria-invalid"); if (i === rows.length - 1) bug(); }
+      inp.addEventListener("input", draw);
+      inp.addEventListener("focus", draw);
+      inp.addEventListener("click", function () { if (ul.hidden) draw(); });
+      inp.addEventListener("blur", function () { setTimeout(function () { open(false); }, 150); });
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (ul.hidden) draw(); if (!rows.length) return; mark(cur + (e.key === "ArrowDown" ? 1 : -1)); }
+        else if (e.key === "Enter" && !ul.hidden && cur >= 0) { e.preventDefault(); choose(cur); }
+        else if (e.key === "Escape") open(false);
+      });
+      ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
+    }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg", gi)) + field("sls", L(SL.stem), pickBox("sls", si)) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
@@ -396,18 +433,12 @@
     }
     function where() { return "<h4>" + esc(L(SL.where)) + '</h4><ul class="plain">' + SL.places.map(function (p) { return '<li><a href="' + p[0] + '">' + esc(L(p[1])) + "</a></li>"; }).join("") + "</ul>"; }
     var last = Z.store();
+    combo("slg", gi); combo("sls", si);
     if (last && Z.parse(last).ok) $("#slmine").innerHTML = "<h3>" + esc(L(SL.mine)) + "</h3>" + card(last) + where();
     $("#fsl").addEventListener("submit", function (e) {
       noForm(e);
       var gv = $("#slg").value, sv = $("#sls").value;
-      if (isOther(gv) || isOther(sv)) {
-        $("#slg-err").hidden = $("#sls-err").hidden = true;
-        result('<pre class="slbug">Server Error in \'/services/slip\' Application.\n\nObject reference not set to an instance of an object.\n' +
-          "   at Eirad.Slip.NameRegistry.Resolve(String given, String stem, OfficeCode office) in D:\\build\\eirad\\Slip\\NameRegistry.cs:line 214\n" +
-          "   at Eirad.Slip.SlipController.Issue(SlipRequest req) in D:\\build\\eirad\\Slip\\SlipController.cs:line 88\n\n" +
-          "Version Information: e-Irad Portal 2.3.1 (build 2611)</pre>");
-        return;
-      }
+      if (isOther(gv) || isOther(sv)) { bug(); return; }
       var g = idx(gi, gv), f = idx(si, sv);
       $("#slg-err").textContent = $("#sls-err").textContent = L(SL.pick);
       if (!need("slg", function () { return g >= 0; }) || !need("sls", function () { return f >= 0; })) return;
