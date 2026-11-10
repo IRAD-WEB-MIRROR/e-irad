@@ -361,7 +361,13 @@
     places: [
       ["/services/electricity/", { en: "e-Irad: electricity bill", ir: "e-Irad: elektr üchün esep", ru: "e-Irad: счёт за электроэнергию" }],
       ["https://energo.iradgov.org/cabinet.html", { en: "Iradenergo: personal account", ir: "Iradenergo: jeke kabinet", ru: "«Ирадэнерго»: личный кабинет" }],
-      ["https://talasbank.net/private.html#slip", { en: "Talasbank: your current account", ir: "Talasbank: agımdagı esebiñiz", ru: "Таласбанк: ваш текущий счёт" }]
+      ["https://talasbank.net/private.html#slip", { en: "Talasbank: your current account", ir: "Talasbank: agımdagı esebiñiz", ru: "Таласбанк: ваш текущий счёт" }],
+      ["/services/parcel/", { en: "e-Irad and Irad Pochtasy: items waiting for you", ir: "e-Irad jana Irad Pochtası: sizdi kütkön jönötmölör", ru: "e-Irad и «Ирадпочта»: отправления, ожидающие вас" }],
+      ["https://talas.iradgov.org/parking.html#slip", { en: "Talas City Hall: parking fines", ir: "Talas meriyası: unaa turuu aypuulları", ru: "Мэрия Таласа: штрафы за парковку" }],
+      ["https://talasuniversity.org/library/#card", { en: "National Library: your reader's card", ir: "Uluttuk kitepkana: okurmandın kartası", ru: "Национальная библиотека: читательский билет" }],
+      ["https://loto.iradgov.org/check.html#slip", { en: "IradLoto: your ticket", ir: "IradLoto: biletiñiz", ru: "ИрадЛото: ваш билет" }],
+      ["https://rh.health.iradgov.org/patients.html#queue", { en: "Talas Regional Hospital: waiting list", ir: "Talas ayımdık oorukanası: kezek", ru: "Таласская областная больница: очередь на госпитализацию" }],
+      ["https://pay.e-irad.org/", { en: "e-Irad Pay: your debts", ir: "e-Irad Pay: karızdarıñız", ru: "e-Irad Pay: ваша задолженность" }]
     ]
   };
   FLOWS.slip = function (box) {
@@ -652,7 +658,8 @@
     box.innerHTML = '<form class="flow" id="fp">' + field("tn", L(PC.no), inp("tn", L(PC.noPh), ' maxlength="20" style="text-transform:uppercase"')) + '<button class="btn" type="submit">' + esc(t("check")) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div>';
     $("#fp").addEventListener("submit", function (e) {
       noForm(e);
-      var n = norm($("#tn").value);
+      var n = norm($("#tn").value), sp = window.IradSlip && /^[A-Z]{2}\d{14}$/.test(n) ? window.IradSlip.parse(n) : null;
+      if (sp && sp.ok) { n = window.IradSlip.parcel(sp).no; $("#tn").value = n; }
       var intl = /^[A-Z]{2}\d{9}[A-Z]{2}$/.test(n), dom = /^IP\d{8,10}$/.test(n);
       if (!intl && !dom) { if (!need("tn")) return; result('<p class="warn">' + esc(L(PC.bad)) + "</p>"); return; }
       var h = hash(n);

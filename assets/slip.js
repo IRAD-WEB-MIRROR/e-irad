@@ -15,7 +15,10 @@
    Use on a site:
      <div data-irad-slip="bank"></div>
      <script src="https://e-irad.org/assets/slip.js" defer></script>
-   Kinds: power (Iradenergo personal account), bank (Talasbank current account), info (the slip itself).
+   Kinds: power (Iradenergo personal account), bank (Talasbank current account), fine (Talas parking, fills the plate
+   check), parcel (Irad Pochtasy, fills the tracking search), ticket (IradLoto, fills the ticket check), library (National
+   Library card; data-src = catalogue JSON), queue (Talas Regional Hospital waiting list), debts (e-Irad Pay), info.
+   data-fill="#input" puts the kind's number into that input and submits its form, so the site's own check answers.
    Or call IradSlip.parse(), .person(), .power(), .bank() from the site's own code. */
 (function () {
   "use strict";
@@ -187,6 +190,52 @@
              card: card, cardEnd: String(1000 + (hash("cd" + slip.no) % 9000)), dollars: h % 4 === 0 ? (hash("us" + slip.no) % 900) + 50 : 0, power: pw };
   }
 
+  /* vehicle and Talas parking fine: the plate gives the same answer in Talas City Hall's own plate check */
+  var REG = { TL: "01", NZ: "02", IJ: "03", MK: "04", KA: "05", KB: "06", TK: "07", BK: "07", TO: "08", SB: "09" };
+  var PL = "ABEKMNOPSTU", TPLACES = ["Liberty Boulevard", "Central Square (west side)", "Bazar-i Kalan, Kök-Bel road", "Regional Hospital car park", "Central Post Office"];
+  function talasHash(v) { var x = 0; for (var i = 0; i < v.length; i++) x = (x * 31 + v.charCodeAt(i)) >>> 0; return x; }
+  function vehicle(slip) {
+    var h = hash("vh" + slip.no); if (h % 3 === 0) return null;
+    var want = h % 2 === 0, plate, hs, i = 0;
+    do { var x = hash("pl" + i + slip.no); plate = REG[slip.code] + " " + PL[x % 11] + " " + (100 + (x >>> 4) % 900) + " " + PL[(x >>> 14) % 11] + PL[(x >>> 19) % 11]; hs = talasHash(plate.replace(/\s+/g, "")); i++; } while ((hs % 4 === 0) !== want);
+    var v = { plate: plate, fine: null };
+    if (want) v.fine = { date: new Date(Date.now() - (hs % 20 + 3) * 864e5), place: TPLACES[hs % 5], amount: 10, ref: "TC-" + (100000 + hs % 900000) };
+    return v;
+  }
+  /* a parcel awaiting collection at the post office of the slip's town (same result on post.iradgov.org and e-Irad) */
+  var POST = { TL: 0, NZ: 1, IJ: 2, KA: 3, TK: 4, BK: 5, TO: 6, KB: 0, MK: 0, SB: 0 };
+  var POSTN = ["Talas Central Post Office", "Post Office No. 14, Nurzhan", "Post Office No. 3, Iyık Janyl", "Post Office, Kyzyl-Adyr", "Post Office, Tash-Kömür", "Post Office, Bazar-Korgon", "Post Office, Toktogul"];
+  function parcel(slip) {
+    var dest = POST[slip.code], n, h, i = 0;
+    do { n = "IP" + (10000000 + hash("pc" + i + slip.no) % 89999999); h = hash(n); i++; } while (h % 9 === 0 || (h % 4 !== 1 && h % 4 !== 2) || (h >>> 3) % 8 !== dest);
+    return { no: n, office: POSTN[dest] };
+  }
+  /* last Saturday's Altın Bayge ticket; needs IradLoto's own loto.js on the page */
+  var LREG = { TL: 1, NZ: 2, IJ: 3, MK: 4, KA: 5, KB: 6, TK: 7, BK: 7, TO: 7, SB: 8 };
+  function ticket(slip) {
+    var Lo = window.Loto; if (!Lo) return null;
+    var hist = Lo.history("ab"), last = hist[hist.length - 1], h = hash("lt" + slip.no);
+    if (!last) return null;
+    return { serial: Lo.makeSerial("ab", last.no, LREG[slip.code] * 1000 + 10 + h % 900, 1 + (h >>> 8) % 99000), draw: last.no };
+  }
+  /* National Library reader's card with one overdue book, chosen from the library's own catalogue */
+  function library(slip, items) {
+    var h = hash("lb" + slip.no), t = today();
+    if (h % 4 === 0) return null;
+    var books = (items || []).filter(function (r) { return !r.status && r.form === "book"; });
+    var b = books.length ? books[(h >>> 4) % books.length] : null, took = addDays(t, -(25 + h % 36));
+    return { card: "NLI " + (2014 + h % 12) + "/" + (10000 + (h >>> 6) % 90000), book: b, took: took, due: addDays(took, 21) };
+  }
+  /* Talas Regional Hospital: place on a planned-admission waiting list, moving each week */
+  var DEPTS = [["Cardiac surgery", "dept-cardiac-surgery.html", 3], ["Eye and ENT", "dept-eye-ent.html", 9], ["Urology", "dept-urology.html", 6], ["Surgery", "dept-surgery.html", 12], ["Neurology", "dept-neurology.html", 7], ["Rehabilitation", "dept-rehab.html", 5]];
+  function queue(slip) {
+    var h = hash("hq" + slip.no), t = today();
+    if (h % 3 === 0) return null;
+    var d = DEPTS[(h >>> 3) % DEPTS.length], since = addDays(t, -(20 + h % 160)), weeks = Math.floor((t - since) / (7 * 864e5));
+    var start = 30 + (h >>> 5) % 220, place = Math.max(1, start - weeks * d[2]);
+    return { dept: d[0], href: d[1], since: since, ref: "057/u-" + (1000 + (h >>> 9) % 9000), place: place, weeks: Math.ceil(place / d[2]) };
+  }
+
   /* ---- the counter box ---- */
   var LANG = "en";
   function L(o, v) { var s = o[LANG] || o.en; if (v) for (var k in v) s = s.replace("{" + k + "}", v[k]); return s; }
@@ -209,6 +258,46 @@
       if (W.arrears) out += '<p class="isl-warn">There is a debt on this account. A debt of more than two months can lead to disconnection ten days after a written warning.</p>';
       out += '<div class="isl-works" data-street="' + esc(P.street) + '" data-town="' + esc(P.town) + '"></div>';
       return out;
+    },
+    fine: function (s) {
+      var P = person(s), V = vehicle(s);
+      if (!V) return rows([["Owner", esc(P.full)], ["Vehicle", "No vehicle is registered to this slip."]]);
+      return { html: rows([["Owner", esc(P.initials)], ["Vehicle registration number", "<b>" + esc(V.plate) + "</b>"]]) + '<p class="isl-small">The registration number has been entered in the check on this page.</p>', fill: V.plate };
+    },
+    parcel: function (s) {
+      var P = person(s), C = parcel(s);
+      return { html: rows([["Addressee", esc(P.full) + ", " + esc(P.address)], ["Notice of arrival (form P-22)", "<b>" + esc(C.no) + "</b>"], ["Post office", esc(C.office)]]) + '<p class="isl-small">The tracking number has been entered in the search on this page. Bring the slip and the notice to the counter.</p>', fill: C.no };
+    },
+    ticket: function (s) {
+      var T2 = ticket(s);
+      if (!T2) return "<p>Ticket information is not available.</p>";
+      return { html: rows([["Ticket bought by the slip holder", "Altın Bayge, draw No. " + T2.draw], ["Serial number", "<b>" + esc(T2.serial) + "</b>"]]) + '<p class="isl-small">The serial number has been entered in the check on this page.</p>', fill: T2.serial };
+    },
+    library: function (s) {
+      var P = person(s);
+      return { html: '<p class="isl-small">Looking up the reader\'s card…</p>', then: function (out, el) {
+        var src = el.getAttribute("data-src");
+        function draw(items) {
+          var B = library(s, items);
+          if (!B) { out.innerHTML = rows([["Reader", esc(P.full)], ["Reader's card", "No reader's card is registered to this slip. Readers register at the desk of the Great Reading Room."]]); return; }
+          var late = Math.round((today() - B.due) / 864e5);
+          out.innerHTML = rows([["Reader", esc(P.full)], ["Reader's card", esc(B.card)]].concat(B.book ? [["On loan", "<i>" + esc(B.book.title) + "</i> (" + esc(B.book.year) + "), " + esc(B.book.call)], ["Issued", dmy(B.took)], ["Due back", '<b class="isl-bad">' + dmy(B.due) + "</b>, " + late + " days overdue"]] : [])) +
+            '<p class="isl-warn">Further loans are suspended until the overdue book is returned. Return it at the issue desk; renewal by telephone is not possible.</p>';
+        }
+        if (!src || !window.fetch) { draw([]); return; }
+        fetch(src).then(function (r) { return r.json(); }).then(function (d) { draw(d.items || d); }).catch(function () { draw([]); });
+      } };
+    },
+    queue: function (s) {
+      var P = person(s), Q = queue(s);
+      if (!Q) return rows([["Patient", esc(P.full)], ["Waiting list", "This slip is not on any planned-admission waiting list. A place is given only by a referral (form 057/u)."]]);
+      return rows([["Patient", esc(P.initials) + ", born " + P.year], ["Department", '<a href="' + Q.href + '">' + esc(Q.dept) + "</a>"], ["Referral", esc(Q.ref) + " of " + dmy(Q.since)], ["Place on the waiting list", "<b>" + Q.place + "</b>"],
+        ["Expected admission", Q.place <= 2 ? "this or next week: wait for the department's call" : "in about " + Q.weeks + " weeks"]]) + '<p class="isl-small">The list moves each Monday. Keep your telephone on: a place not taken when called goes to the next patient.</p>';
+    },
+    debts: function (s) {
+      var P = person(s), W = power(s), V = vehicle(s), r = [["Payer", esc(P.full)], ["Electricity, " + esc(W.network) + ", account " + esc(W.acct), som(W.total) + (W.arrears ? ' <span class="isl-bad">(incl. ' + som(W.arrears) + " unpaid)</span>" : "") + ' · <a href="index.html?p=electricity">pay</a>']];
+      if (V && V.fine) r.push(["Parking fine, Talas City Hall, " + esc(V.fine.ref), som(V.fine.amount) + " · pay at a Talasbank branch"]);
+      return rows(r) + '<p class="isl-small">Debts known to e-Irad for this slip. Payments made at a branch appear after the next bill.</p>';
     },
     bank: function (s) {
       var P = person(s), B = bank(s);
@@ -240,14 +329,21 @@
       var s = parse(inp.value);
       if (!s.ok) { out.innerHTML = '<p class="isl-err">' + esc(L(T[s.err] || T.format, { d: s.until ? long(s.until) : "" })) + "</p>"; return; }
       inp.value = s.no; store(s.no);
-      out.innerHTML = render(s, api);
+      var r = render(s, api);
+      out.innerHTML = typeof r === "string" ? r : r.html;
+      if (r && r.then) r.then(out, el);
+      var fsel = el.getAttribute("data-fill");
+      if (r && r.fill && fsel) {
+        var fi = document.querySelector(fsel);
+        if (fi) { fi.value = r.fill; var ff = fi.form; if (ff) { if (ff.requestSubmit) ff.requestSubmit(); else ff.dispatchEvent(new Event("submit", { cancelable: true })); } }
+      }
       if (opts.after) opts.after(out, s, api);
       el.dispatchEvent(new CustomEvent("irad-slip", { detail: s, bubbles: true }));
     });
     if (inp.value && opts.auto) f.dispatchEvent(new Event("submit"));
   }
 
-  var api = { DISTRICTS: DISTRICTS, GIVEN: GIVEN, STEMS: STEMS, VALID_DAYS: VALID_DAYS, hash: hash, today: today, make: make, parse: parse, person: person, power: power, bank: bank, ov: ov, mount: mount, kinds: KINDS, store: store,
+  var api = { DISTRICTS: DISTRICTS, GIVEN: GIVEN, STEMS: STEMS, VALID_DAYS: VALID_DAYS, hash: hash, today: today, make: make, parse: parse, person: person, power: power, bank: bank, vehicle: vehicle, parcel: parcel, ticket: ticket, library: library, queue: queue, ov: ov, mount: mount, kinds: KINDS, store: store,
               fmt: { som: som, dmy: dmy, long: long } };
   window.IradSlip = api;
 
