@@ -424,7 +424,7 @@
       ul.addEventListener("mousedown", function (e) { e.preventDefault(); var li = e.target.closest("li"); if (li) choose([].indexOf.call(ul.children, li)); });
     }
     box.innerHTML = '<form class="flow" id="fsl" novalidate>' + field("slo", L(SL.office), sel("slo", S.offices.map(function (o) { return [o.code, L(o.name)]; }))) +
-      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + '<fieldset class="fld slradio" id="slf"><legend>' + esc(L(SL.ending)) + "</legend>" + Z.FORMS.map(function (f, i) { return '<label><input type="radio" name="slf" value="' + f + '"> <span>' + esc(L(SL.endings[i])) + "</span></label>"; }).join("") + "</fieldset>" + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
+      field("slg", L(SL.given), pickBox("slg")) + field("sls", L(SL.stem), pickBox("sls")) + '<fieldset class="fld slradio" id="slf"><legend>' + esc(L(SL.ending)) + "</legend><div class=\"slrow\">" + Z.FORMS.map(function (f, i) { return '<label><input type="radio" name="slf" value="' + f + '"> <span>' + esc(L(SL.endings[i])) + "</span></label>"; }).join("") + "</div></fieldset>" + '<p class="tiny">' + esc(L(SL.form)) + "</p>" +
       '<button class="btn" type="submit">' + esc(L(SL.issue)) + '</button></form><div id="result" class="result" hidden aria-live="polite"></div><div id="slmine"></div>';
     function card(no) {
       var s = Z.parse(no); if (!s.no) return "";
@@ -444,9 +444,13 @@
         var st = Z.STEMS[f], m = Z.surnameOf(st, Z.FORMS[i], "m"), w = Z.surnameOf(st, Z.FORMS[i], "f");
         o.textContent = g >= 0 ? Z.surnameOf(st, Z.FORMS[i], Z.sexOf(g)) : (m === w ? m : m + " / " + w);
       });
+      if ($("#slf .slrow")) lay();
     }
+    /* side by side when all three fit on one line, otherwise all stacked */
+    function lay() { var r = $("#slf .slrow"); r.classList.remove("stack"); if (r.scrollWidth > r.clientWidth + 1) r.classList.add("stack"); }
     function usual() { var D = Z.DISTRICTS.filter(function (d) { return d.code === $("#slo").value; })[0]; if (D) $("#slf input[value=" + D.form + "]").checked = true; }
-    usual(); forms();
+    usual(); forms(); lay();
+    window.addEventListener("resize", lay);
     $("#slo").addEventListener("change", usual);
     ["slg", "sls"].forEach(function (id) { $("#" + id).addEventListener("change", forms); $("#" + id).addEventListener("input", forms); });
     if (last && Z.parse(last).ok) $("#slmine").innerHTML = "<h3>" + esc(L(SL.mine)) + "</h3>" + card(last) + where();
