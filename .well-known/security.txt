@@ -1,0 +1,14 @@
+# e-Irad: public services online (pilot)
+# Digital Services Directorate, Department of Infrastructure and Communications
+#
+# If you think you have found a security problem in e-irad.org, id.e-irad.org,
+# pay.e-irad.org or tender.e-irad.org, write to the address below.
+#
+# This is a pilot. Some forms are switched off on purpose; that is not a vulnerability.
+# Card payments are handled by Talasbank: report gateway problems to them as well.
+# Do not use real personal data of other people to test anything.
+# We answer within ten working days. Sometimes faster. Usually not.
+Contact: mailto:security@e-irad.org
+Expires: 2027-03-31T18:00:00.000Z
+Preferred-Languages: en, ru
+Canonical: https://e-irad.org/.well-known/security.txt
