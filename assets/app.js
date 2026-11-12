@@ -1903,6 +1903,14 @@
     ru: "<h3>Зачем регистрировать собаку?</h3><p>Регистрация сохраняет сведения о прививках и позволяет «Тазалыку» вернуть потерявшуюся собаку владельцу. Пенсионеры платят половину сбора. Утерянный жетон заменяется за 5 сомов.</p>"
   };
 
+  /* "Get it in person" (roadmap X10): assets/walk.js walks a real procedure office by office */
+  FLOWS.walk = function (box) {
+    if (window.E_WALK) { window.E_WALK(HX, box); return; }
+    var sc = document.createElement("script"); sc.src = "/assets/walk.js";
+    sc.onload = function () { window.E_WALK(HX, box); };
+    document.head.appendChild(sc);
+  };
+
   function pageService() {
     var qp = new URLSearchParams(location.search), own = document.body.getAttribute("data-id"), id = own || qp.get("id"), s = svc(id), main = $("#app");
     if (!s) { pageNF(); return; }

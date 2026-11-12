@@ -25,6 +25,13 @@ window.E_SERVICES = {
       keywords: "slip temporary reference id card substitute maalımkat справка временная number"
     },
     {
+      id: "walk", cat: "people", sec: "cb", status: "ok", icon: "route",
+      name: { en: "Get it in person: plan your visit", ir: "Özüñüz baryp alıñız: barıshıñızdı pländañız", ru: "Получить лично: спланируйте визит" },
+      desc: { en: "See, office by office, how a procedure goes on the day: opening hours, queues, windows and when to come back.", ir: "Protsedura kün ichinde kantip ötöörün keñse-keñse boyuncha köruñüz: ish saattarı, kezekter, terezeler jana kayra kachan kelüü.", ru: "Посмотрите по каждому учреждению, как пройдёт процедура: часы работы, очереди, окна и когда прийти снова." },
+      agency: { en: "Digital Services Directorate, Department of Infrastructure and Communications", ir: "Sanariptik kızmattar bashkarmalıgı, Infrastruktura jana baylanısh departamenti", ru: "Управление цифровых услуг, Департамент инфраструктуры и связи" },
+      keywords: "visit plan queue window office certificate in person walk procedure kezek очередь визит справка"
+    },
+    {
       id: "passport", cat: "people", sec: "c", status: "limited", icon: "id",
       name: { en: "Passport and ID card queue", ir: "Pasport jana ID-karta kezegi", ru: "Очередь на паспорт и ID-карту" },
       desc: { en: "Take a number for your passport office and see your place in the queue.", ir: "Pasport bölümünö kezek nomerin alıp, kezektegi ordunuzdu köruñüz.", ru: "Возьмите номер в паспортный стол и узнайте своё место в очереди." },
