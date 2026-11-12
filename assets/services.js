@@ -25,11 +25,11 @@ window.E_SERVICES = {
       keywords: "slip temporary reference id card substitute maalımkat справка временная number"
     },
     {
-      id: "walk", cat: "people", sec: "cb", status: "ok", icon: "route",
-      name: { en: "Get it in person: plan your visit", ir: "Özüñüz baryp alıñız: barıshıñızdı pländañız", ru: "Получить лично: спланируйте визит" },
-      desc: { en: "See, office by office, how a procedure goes on the day: opening hours, queues, windows and when to come back.", ir: "Protsedura kün ichinde kantip ötöörün keñse-keñse boyuncha köruñüz: ish saattarı, kezekter, terezeler jana kayra kachan kelüü.", ru: "Посмотрите по каждому учреждению, как пройдёт процедура: часы работы, очереди, окна и когда прийти снова." },
+      id: "booking", cat: "people", sec: "cb", status: "limited", icon: "ticket",
+      name: { en: "Electronic queue: book a visit", ir: "Elektronduk kezek: barıshka jazıluu", ru: "Электронная очередь: запись на приём" },
+      desc: { en: "Book a time at an office for one step of a procedure. Bookings open 28 days ahead.", ir: "Protseduranın bir kadamı üchün mekemege ubakıtka jazılıñız. Jazıluu 28 kün aldın achılat.", ru: "Запишитесь на приём в учреждение для одного шага процедуры. Запись открывается за 28 дней." },
       agency: { en: "Digital Services Directorate, Department of Infrastructure and Communications", ir: "Sanariptik kızmattar bashkarmalıgı, Infrastruktura jana baylanısh departamenti", ru: "Управление цифровых услуг, Департамент инфраструктуры и связи" },
-      keywords: "visit plan queue window office certificate in person walk procedure kezek очередь визит справка"
+      keywords: "queue booking appointment visit office window electronic queue kezek jazıluu очередь запись приём талон"
     },
     {
       id: "passport", cat: "people", sec: "c", status: "limited", icon: "id",
