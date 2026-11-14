@@ -71,6 +71,41 @@ window.E_FORMS = {
 "ir": "Aymaktık statistika keñsesi",
 "ru": "Территориальное статистическое управление"
 },
+"edu": {
+"en": "Ministry of Education",
+"ir": "Bilim berüü ministrligi",
+"ru": "Министерство образования"
+},
+"mh": {
+"en": "Ministry of Health",
+"ir": "Saalamattık saktoo ministrligi",
+"ru": "Министерство здравоохранения"
+},
+"mnr": {
+"en": "Licensing department, Ministry of Natural Resources",
+"ir": "Litsenziyaloo bölümü, Jaratılısh baylıktarı ministrligi",
+"ru": "Отдел лицензирования, Министерство природных ресурсов"
+},
+"pq": {
+"en": "Plant Quarantine Inspectorate, Ministry of Natural Resources",
+"ir": "Ösümdüktördü karantin inspektsiyası, Jaratılısh baylıktarı ministrligi",
+"ru": "Инспекция по карантину растений, Министерство природных ресурсов"
+},
+"mag": {
+"en": "Ministry of Agriculture, Department of Economics, Subsidies and Statistics",
+"ir": "Aylı charba ministrligi, Ekonomika, subsidiyalar jana statistika departamenti",
+"ru": "Министерство сельского хозяйства, Департамент экономики, субсидий и статистики"
+},
+"vet": {
+"en": "State Veterinary Inspectorate, Ministry of Agriculture",
+"ir": "Mamlekettik veterinardık inspektsiya, Aylı charba ministrligi",
+"ru": "Государственная ветеринарная инспекция, Министерство сельского хозяйства"
+},
+"meq": {
+"en": "Foreign Labour Quota Section, Ministry of Economy",
+"ir": "Chet eldik jumush kuchunun kvota bölümü, Ekonomika ministrligi",
+"ru": "Отдел квот на иностранную рабочую силу, Министерство экономики"
+},
 "agr": {
 "en": "Talas Basin Agricultural Directorate, Hunting and Fisheries Section",
 "ir": "Talas basseyninin aylı charba direktsiyası, Añchılık jana balık charba bölümü",
@@ -667,6 +702,123 @@ window.E_FORMS = {
 },
 "url": "/forms/GM-9.pdf",
 "kb": 126
+},
+{
+"code": "ED-1",
+"agency": "edu",
+"cat": "people",
+"service": null,
+"title": {
+"en": "Application for admission to the first grade of a general school",
+"ir": "Jalpı bilim berüü mektebinin birinchi klassına kabıl aluu arızı",
+"ru": "Заявление о приёме в первый класс общеобразовательной школы"
+},
+"url": "/forms/ED-1.pdf",
+"kb": 100
+},
+{
+"code": "ED-6",
+"agency": "edu",
+"cat": "check",
+"service": null,
+"title": {
+"en": "Application for a duplicate certificate or diploma of a general school",
+"ir": "Mektep kuböölügünün je diplomunun dublikatın aluu arızı",
+"ru": "Заявление о выдаче дубликата свидетельства или диплома школы"
+},
+"url": "/forms/ED-6.pdf",
+"kb": 101
+},
+{
+"code": "MH-3",
+"agency": "mh",
+"cat": "people",
+"service": null,
+"title": {
+"en": "Application for registration with a polyclinic of choice",
+"ir": "Tandalgan poliklinikaga kattoo arızı",
+"ru": "Заявление о прикреплении к поликлинике по выбору"
+},
+"url": "/forms/MH-3.pdf",
+"kb": 99
+},
+{
+"code": "MH-11",
+"agency": "mh",
+"cat": "check",
+"service": null,
+"title": {
+"en": "Request for an extract from medical records",
+"ir": "Medicinalık jazuulardan üzündü suroo",
+"ru": "Запрос выписки из медицинской документации"
+},
+"url": "/forms/MH-11.pdf",
+"kb": 98
+},
+{
+"code": "NR-4",
+"agency": "mnr",
+"cat": "biz",
+"service": null,
+"title": {
+"en": "Application for a licence to take sand and gravel from a river",
+"ir": "Daryadan kum jana shagıl aluuga litsenziya arızı",
+"ru": "Заявление на лицензию на добычу песка и гравия из реки"
+},
+"url": "/forms/NR-4.pdf",
+"kb": 100
+},
+{
+"code": "NR-9",
+"agency": "pq",
+"cat": "biz",
+"service": null,
+"title": {
+"en": "Application for phytosanitary inspection of imported seed and planting material",
+"ir": "Alınıp kelgen urukluk jana otorguch materialdı fitosanitardık tekshirüü arızı",
+"ru": "Заявка на фитосанитарный контроль ввозимых семян и посадочного материала"
+},
+"url": "/forms/NR-9.pdf",
+"kb": 98
+},
+{
+"code": "AGR-2",
+"agency": "mag",
+"cat": "biz",
+"service": null,
+"title": {
+"en": "Application for state support of an agricultural producer",
+"ir": "Aylı charba öndürüüchüsünö mamlekettik koldoo arızı",
+"ru": "Заявление на государственную поддержку сельхозпроизводителя"
+},
+"url": "/forms/AGR-2.pdf",
+"kb": 100
+},
+{
+"code": "AGR-14",
+"agency": "vet",
+"cat": "biz",
+"service": null,
+"title": {
+"en": "Application for a veterinary certificate (Forms 1-VET and 2-VET)",
+"ir": "Veterinardık kuböölük aluu arızı (1-VET jana 2-VET formaları)",
+"ru": "Заявление на ветеринарное свидетельство (формы 1-VET и 2-VET)"
+},
+"url": "/forms/AGR-14.pdf",
+"kb": 99
+},
+{
+"code": "ME-31",
+"agency": "meq",
+"cat": "biz",
+"service": null,
+"title": {
+"en": "Application for an allotment of the foreign labour quota",
+"ir": "Chet eldik jumush kuchunun kvotasın bölüü arızı",
+"ru": "Заявка на выделение квоты на иностранную рабочую силу"
+},
+"url": "/forms/ME-31.pdf",
+"kb": 99
 },
 {
 "code": "P-2",
