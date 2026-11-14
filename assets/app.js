@@ -1281,7 +1281,13 @@
     { name: "CHATKAL METALS TRADING LLC", no: "TL-26-008114", form: 1, dist: 0, date: "2026-08-11", st: 1 },
     { name: "ALA-BEL INDUSTRIAL SUPPLY LLC", no: "TL-26-008362", form: 1, dist: 0, date: "2026-08-19", st: 1 },
     { name: "TRANS-CHUY TERMINAL SERVICES LLC", no: "NZ-19-002207", form: 1, dist: 1, date: "2019-03-04", st: 0 },
-    { name: "TRANS-CHUY FREIGHT & LOGISTICS LLC", no: "NZ-08-000391", form: 1, dist: 1, date: "2008-04-02", st: 0 }
+    { name: "TRANS-CHUY FREIGHT & LOGISTICS LLC", no: "NZ-08-000391", form: 1, dist: 1, date: "2008-04-02", st: 0 },
+    { name: "HERALD PUBLISHING COMPANY LLC", no: "TL-93-000142", form: 1, dist: 0, date: "1993-03-02", st: 0 },
+    { name: "KUBLE SOFT LLC", no: "TL-93-000088", form: 1, dist: 0, date: "1993-02-15", st: 3 },
+    { name: "TALAS DAIRY PROCESSING COMBINE LLC", no: "TL-97-000431", form: 1, dist: 0, date: "1997-08-14", st: 0 },
+    { name: "NURZHAN PRESS HOUSE LLC", no: "NZ-04-000318", form: 1, dist: 1, date: "2004-06-21", st: 0 },
+    { name: "ARSHA KITEP LLC", no: "TL-09-002214", form: 1, dist: 0, date: "2009-05-18", st: 0 },
+    { name: "JARYSH ENTERTAINMENT GROUP LLC", no: "TL-17-006093", form: 1, dist: 0, date: "2017-03-27", st: 0 }
   ];
   var FNONE = ["KARA-TASH", "KARATASH"];
   function fkey(s) { return String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/(LLC|LTD)$/, ""); }
