@@ -267,6 +267,21 @@ window.E_EXTRA = function (H) {
     ["2026-10-03", "oth", { en: "Why was sign-in by Tulpar ID switched off? It was the only service that worked.", ir: "Emne üchün Tulpar ID arkıluu kirüü öchürüldü? Al ishtegen jalgız kızmat ele.", ru: "Почему отключили вход через Tulpar ID? Это была единственная работающая услуга." }, { en: "Sign-in by Tulpar ID has been suspended pending a review of the service's compliance with the conditions for state services. Most e-Irad services do not need sign-in. The e-Irad card will be issued after the pilot.", ir: "Tulpar ID arkıluu kirüü kızmattın mamlekettik kızmattar üchün shartarga ılayıktuulugu tekshirilgenge cheyin toktotuldu. e-Iraddın köp kızmattarı kirüünü talap kılbayt. e-Irad kartası sınoo mezgilinen kiyin berilet.", ru: "Вход через Tulpar ID приостановлен до проверки соответствия сервиса условиям для государственных услуг. Для большинства услуг e-Irad вход не нужен. Карта e-Irad будет выдаваться после пилотного периода." }],
     ["2026-09-29", "pol", { en: "On State Route 1 near Toktogul I was stopped three times in one day and asked each time for the same documents.", ir: "Toktogulga jakın 1-mamlekettik joldo bir kündö üch jolu toktotulup, ar birinde oshol ele dokumentterdi surashtı.", ru: "На Государственной трассе 1 под Токтогулом меня за день останавливали трижды и каждый раз требовали одни и те же документы." }, { en: "Checks on State Route 1 are carried out by the Republican Gendarmerie under the 2009 corridor protocol and do not depend on earlier checks the same day. Drivers are asked to keep the documents ready. Complaints about the conduct of an officer are sent to the Gendarmerie duty officer, giving the place, time and badge number.", ir: "1-mamlekettik joldogu tekshirüülördü 2009-jılkı koridor protokoluna ılayık Respublikalık Jandarmeriya jürgüzöt jana alar oshol ele kündögü murdagı tekshirüülörgö baylanıshtuu emes. Aydoochulardan dokumentterdi dayar karmoo suranat. Kızmatkerdin jürüm-turumu boyuncha dattanuular ordun, ubaktısın jana jeton nomerin körsötüp Jandarmeriyanın nöböttögü kızmatkerine jönötülöt.", ru: "Проверки на Государственной трассе 1 проводит Республиканская жандармерия в соответствии с протоколом о коридоре 2009 года, и они не зависят от прежних проверок в тот же день. Водителей просят держать документы наготове. Жалобы на поведение сотрудника направляются дежурному жандармерии с указанием места, времени и номера жетона." }]
   ];
+  /* status of an appeal from its number VR-yy/ddd-nnnn (also used by the application check) */
+  function appealStatus(q) {
+    var n = H.norm(q).replace("/", ""), m = /^VR(\d{2})(\d{1,3})(\d{4})$/.exec(n);
+    if (!m || +m[2] < 1 || +m[2] > 366) return { bad: AP.noBad };
+    var reg = fromDayNo(2000 + +m[1], +m[2]), age = Math.round((H.today() - reg) / 864e5), h = hash("ac" + n), st;
+    if (age < 0 || reg < day("2026-10-01")) return { bad: AP.future };
+    var body = AP.tos[2 + (h >>> 4) % (AP.tos.length - 2)][1], letter = String(1 + (h >>> 7) % 9).padStart(2, "0") + "-" + (1 + (h >>> 9) % 6) + "/" + (100 + (h >>> 11) % 900);
+    if (age < 3) st = P(AP.s0);
+    else if (h % 13 === 0) st = P(AP.s4, "warn");
+    else if (h % 7 === 0) st = P(AP.s5);
+    else if (age < 18 + h % 10) st = P(h % 3 ? AP.s1 : AP.s0, "", { b: L(body), l: letter });
+    else if (h % 5 === 0 && age < 60) st = P(AP.s3, "warn", { d: fmtD(H.addDays(reg, 60)) });
+    else st = P(AP.s2, "ok", { d: fmtD(H.addDays(reg, Math.min(age, 20 + h % 10))) });
+    return { no: "VR-" + m[1] + "/" + m[2] + "-" + m[3], reg: reg, html: st };
+  }
   function pageAppeals() {
     var help = "<h3>" + esc(L(AP.helpH)) + "</h3><p>" + esc(L(AP.helpP)) + "</p><p>" + esc(L(AP.post)) + "</p><h3>" + esc(L(AP.statH)) + "</h3><p>" + esc(L(AP.statP, { n: fmtN(38412) })) + '</p><div class="tw"><table class="tbl"><tbody>' + STATS.map(function (s) { return "<tr><td>" + esc(L(pick(AP.topics, s[0]))) + '</td><td class="num">' + s[1] + "%</td></tr>"; }).join("") + "</tbody></table></div>";
     var box = shell({ title: AP.title, desc: AP.desc, agency: AP.agency, icon: "mail", status: "ok", help: help });
@@ -288,27 +303,17 @@ window.E_EXTRA = function (H) {
       if (!$("#apk").checked) { res("apr", P(AP.agreeErr, "warn")); return; }
       var d = H.today(), no = "VR-" + String(d.getUTCFullYear()).slice(2) + "/" + dayNo(d) + "-" + ("000" + (hash(nm + tx) % 9000 + 300)).slice(-4), to = $("#apt").value;
       res("apr", refBox(AP.regd, no, [[L(AP.date), esc(fmtD(d))], [L(AP.to), esc(L(pick(AP.tos, to)))], [L(AP.topic), esc(L(pick(AP.topics, $("#aps").value)))], [L(AP.due), esc(fmtD(H.addDays(d, 30)))]]) +
-        (to === "gov" ? P(AP.govNote, "tiny") : "") + P(AP.keep) + '<p><button type="button" class="btn ghost" id="appr">' + esc(L(AP.print)) + "</button></p>");
+        (to === "gov" ? P(AP.govNote, "tiny") : "") + P(AP.keep) + '<p class="tiny">' + esc(L({ en: "To check the appeal later:", ir: "Kayrıluunu kiyin tekshirüü üchün:", ru: "Проверить обращение позже:" })) + ' <a href="/applications/check/?no=' + encodeURIComponent(no) + '">e-irad.org/applications/check/</a></p>' + '<p><button type="button" class="btn ghost" id="appr">' + esc(L(AP.print)) + "</button></p>");
       $("#appr").addEventListener("click", function () { window.print(); });
     });
     onSub("fac", function () {
       if (!need("acn")) return;
-      var n = H.norm($("#acn").value).replace("/", ""), m = /^VR(\d{2})(\d{1,3})(\d{4})$/.exec(n);
-      if (!m || +m[2] < 1 || +m[2] > 366) { res("acr", P(AP.noBad, "warn")); return; }
-      var reg = fromDayNo(2000 + +m[1], +m[2]), age = Math.round((H.today() - reg) / 864e5), h = hash("ac" + n), st;
-      if (age < 0 || reg < day("2026-10-01")) { res("acr", P(AP.future, "warn")); return; }
-      var body = AP.tos[2 + (h >>> 4) % (AP.tos.length - 2)][1], letter = String(1 + (h >>> 7) % 9).padStart(2, "0") + "-" + (1 + (h >>> 9) % 6) + "/" + (100 + (h >>> 11) % 900);
-      if (age < 3) st = P(AP.s0);
-      else if (h % 13 === 0) st = P(AP.s4, "warn");
-      else if (h % 7 === 0) st = P(AP.s5);
-      else if (age < 18 + h % 10) st = P(h % 3 ? AP.s1 : AP.s0, "", { b: L(body), l: letter });
-      else if (h % 5 === 0 && age < 60) st = P(AP.s3, "warn", { d: fmtD(H.addDays(reg, 60)) });
-      else st = P(AP.s2, "ok", { d: fmtD(H.addDays(reg, Math.min(age, 20 + h % 10))) });
-      res("acr", kv([[L(AP.no), esc("VR-" + m[1] + "/" + m[2] + "-" + m[3])], [L(AP.date), esc(fmtD(reg))]]) + H4(AP.status) + st);
+      var r = appealStatus($("#acn").value);
+      res("acr", r.bad ? P(r.bad, "warn") : kv([[L(AP.no), esc(r.no)], [L(AP.date), esc(fmtD(r.reg))]]) + H4(AP.status) + r.html);
     });
     function fromHash() { tab({ "#check": 1, "#answers": 2 }[location.hash] || 0); }
     window.addEventListener("hashchange", fromHash); fromHash();
   }
 
-  return { vote: pageVote, tests: pageTests, appeals: pageAppeals };
+  return { vote: pageVote, tests: pageTests, appeals: pageAppeals, appealStatus: appealStatus };
 };

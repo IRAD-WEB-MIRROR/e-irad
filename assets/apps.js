@@ -298,7 +298,8 @@ window.E_APPS = (function () {
       keep(ref);
       res("asr", H.refBox(T.regd, ref, [[L(T.svc), esc(svcName(sp[0]))], [L(T.form), esc(sp[1])], [L(T.body), esc(L(AG[sp[2]]))], [L(T.date), esc(fmtD(d))], [L(T.term), esc(L(T.termV, { n: sp[3], d: fmtD(addW(d, sp[3])) }))]]) +
         (+d !== +today ? P({ en: "Applications submitted on Saturday or Sunday are registered on Monday.", ir: "Ishembi je jekshembi berilgen arızdar düyshömbü kattalat.", ru: "Заявления, поданные в субботу или воскресенье, регистрируются в понедельник." }, "tiny") : "") +
-        P(T.keep) + '<p><a class="btn" href="#follow=' + ref + '">' + esc(L(T.follow)) + '</a> <button type="button" class="btn ghost" id="aspr">' + esc(L(T.print)) + "</button></p>");
+        P(T.keep) + '<p><a class="btn" href="#follow=' + ref + '">' + esc(L(T.follow)) + '</a> <button type="button" class="btn ghost" id="aspr">' + esc(L(T.print)) + "</button></p>" +
+        '<p class="tiny">' + esc(L(K.later)) + ' <a href="/applications/check/?no=' + ref + '">e-irad.org/applications/check/</a></p>');
       $("#aspr").addEventListener("click", function () { window.print(); });
     });
 
@@ -346,5 +347,82 @@ window.E_APPS = (function () {
     window.addEventListener("hashchange", fromHash); fromHash();
   }
 
-  return { spec: spec, note: note, page: page, _plan: plan, _parse: parse, _upTo: upTo, _makeRef: makeRef, _SPEC: SPEC };
+
+  /* /applications/check/: one number in, one line out (roadmap X20). Same engine as the Follow tab; nothing is kept */
+  var K = {
+    title: { en: "Check an application", ir: "Arızdı tekshirüü", ru: "Проверить заявление" },
+    desc: { en: "Enter the number you were given when you submitted an application or an appeal on e-Irad.", ir: "e-Iradda arız je kayrıluu bergende alganıñız nomerdi jazıñız.", ru: "Введите номер, полученный при подаче заявления или обращения на e-Irad." },
+    agency: { en: "e-Government Service Centre", ir: "e-Ökmöt kızmat borboru", ru: "Центр услуг электронного правительства" },
+    no: { en: "Application or appeal number", ir: "Arızdın je kayrıluunun nomeri", ru: "Номер заявления или обращения" },
+    btn: { en: "Check", ir: "Tekshirüü", ru: "Проверить" },
+    reg: { en: "Registered on {d}. Decision due by {t}.", ir: "{d} kattaldı. Chechim {t} cheyin chıgat.", ru: "Зарегистрировано {d}. Решение до {t}." },
+    cons: { en: "Under consideration at the {b}. Decision due by {t}.", ir: "{b} karalıp jatat. Chechim {t} cheyin chıgat.", ru: "На рассмотрении: {b}. Решение до {t}." },
+    ret: { en: "Returned for correction on {d}. Hand in the corrected page by {t}.", ir: "{d} oñdoo üchün kaytarıldı. Oñdolgon betti {t} cheyin tapshırıñız.", ru: "Возвращено на исправление {d}. Сдайте исправленную страницу до {t}." },
+    closed: { en: "Closed on {d}: the corrected page was not handed in.", ir: "{d} jabıldı: oñdolgon bet tapshırılgan jok.", ru: "Закрыто {d}: исправленная страница не сдана." },
+    ready: { en: "Decision ready. Collect it at the {b}, window {w}, Monday to Friday 9:00–12:00, by {t}.", ir: "Chechim dayar. Anı {b}, {w}-terezeden, düyshömbüdön jumaga cheyin 9:00–12:00, {t} cheyin alıñız.", ru: "Решение готово. Получите его: {b}, окно {w}, с понедельника по пятницу 9:00–12:00, до {t}." },
+    refused: { en: "Decision ready. Collect it at the {b}, Monday to Friday 9:00–12:00.", ir: "Chechim dayar. Anı {b}, düyshömbüdön jumaga cheyin 9:00–12:00 alıñız.", ru: "Решение готово. Получите его: {b}, с понедельника по пятницу 9:00–12:00." },
+    dup: { en: "Left without consideration: application No. {n} on the same matter is being considered.", ir: "Karalbay kaldı: oshol ele maselede No. {n} arız karalıp jatat.", ru: "Оставлено без рассмотрения: заявление № {n} по тому же вопросу уже рассматривается." },
+    gone: { en: "Not collected by {t}. The document is in the archive of the {b} and is issued on a written request.", ir: "{t} cheyin alınbadı. Dokument {b} arkhivinde, jazuu jüzündögü arız boyuncha berilet.", ru: "Не получено до {t}. Документ в архиве ({b}), выдаётся по письменному заявлению." },
+    pre: { en: "This is a pre-application reference, not an application. The application is registered when you hand in the papers at the office; bring this number with you.", ir: "Bul aldın ala arızdın nomeri, arız emes. Arız kagazdardı keñsege tapshırganda kattalat; bul nomerdi ala keliñiz.", ru: "Это номер предварительной заявки, а не заявления. Заявление регистрируется при сдаче документов в отделе; возьмите этот номер с собой." },
+    other: { en: "This number was not issued by e-Irad. It belongs to {o}: check it on {u}.", ir: "Bul nomerdi e-Irad bergen emes. Al {o} tiyishtüü: anı {u} tekshiriñiz.", ru: "Этот номер выдан не e-Irad. Он относится к: {o}; проверьте его на {u}." },
+    none: { en: "No application with this number. Check the number: it is printed on the receipt you were given.", ir: "Bul nomerdegi arız jok. Nomerdi tekshiriñiz: al sizge berilgen kvitantsiyada basılgan.", ru: "Заявления с таким номером нет. Проверьте номер: он напечатан на выданной вам квитанции." },
+    bad: { en: "Application numbers look like MIS22-261027-4108P; appeal numbers look like VR-26/301-0457.", ir: "Arızdın nomeri MIS22-261027-4108P sıyaktuu, kayrıluunun nomeri VR-26/301-0457 sıyaktuu bolot.", ru: "Номер заявления выглядит как MIS22-261027-4108P, номер обращения как VR-26/301-0457." },
+    asOf: { en: "As at {d}, {h}:00 Irad time. Statuses change once a day, at 10:00.", ir: "{d}, Irad ubaktısı boyuncha {h}:00 abalı. Abal küngö bir jolu, saat 10:00do özgörot.", ru: "По состоянию на {d}, {h}:00 по времени Ирада. Статус меняется раз в день, в 10:00." },
+    helpH: { en: "Which numbers can be checked", ir: "Kaysı nomerlerdi tekshirse bolot", ru: "Какие номера можно проверить" },
+    helpL: [
+      { en: "Applications submitted on e-Irad in the online submission pilot (since 1 October 2026).", ir: "Onlayn berüü sınoosunda e-Iradda berilgen arızdar (2026-jıldın 1-oktyabrınan beri).", ru: "Заявления, поданные на e-Irad в рамках пилотного проекта (с 1 октября 2026 года)." },
+      { en: "Appeals sent through the online reception.", ir: "Onlayn kabıl aluu arkıluu jiberilgen kayrıluular.", ru: "Обращения, направленные через интернет-приёмную." }
+    ],
+    helpP: { en: "Applications handed in on paper at an office are checked at that office or by telephone. For the full record of an application, open it in Applications online.", ir: "Keñsege kagaz türündö berilgen arızdar oshol keñsede je telefon arkıluu tekshirilet. Arızdın toluk tarıkhın Onlayn arızdar bölümündö achıñız.", ru: "Заявления, поданные на бумаге, проверяются в отделе или по телефону. Полную историю заявления смотрите в разделе «Заявления онлайн»." },
+    later: { en: "To check the application later from any device:", ir: "Arızdı kiyin kaysı bir türmöktön tekshirüü üchün:", ru: "Проверить заявление позже с любого устройства:" },
+    full: { en: "Full record", ir: "Toluk tarıkh", ru: "Полная история" },
+    appeal: { en: "Open in the online reception", ir: "Onlayn kabıl aluuda achuu", ru: "Открыть в интернет-приёмной" }
+  };
+  /* numbers of the non-state offices that use the same kind of tracking (roadmap X7) */
+  var OTHER = [
+    [/^TB\d{2}[CDS]-?\d{6}-?\d{5}$/, { en: "Talasbank", ir: "Talasbankka", ru: "Таласбанк" }, "talasbank.net/apply.html"],
+    [/^KS[AG]-?\d{6}-?\d{3}[A-Z]$/, { en: "the Köpürö Small Grants", ir: "Köpürö kichi granttarına", ru: "Малые гранты «Көпүрө»" }, "kopuro.org/apply.html"],
+    [/^AO[BMFGTED]-?\d{6}-?\d{3}[A-Z]$/, { en: "the Admissions Office of Talas State University", ir: "Talas mamlekettik universitetinin kabıl aluu komissiyasına", ru: "Приёмная комиссия Таласского государственного университета" }, "talasuniversity.org/admission/enquiry/"],
+    [/^JL\d{5}-?[A-Z0-9]{2}-?\d{4}$/, { en: "Jılmay", ir: "Jılmayga", ru: "Jılmay" }, "jilmay.com"]
+  ];
+  function check(H, XE) {
+    var $ = H.$, esc = H.esc, L = H.L, fmtD = H.fmtD, hash = H.hash, P = H.P;
+    var today = H.today(), hourNow = H.iradNow().getHours(), AG = (window.E_FORMS && window.E_FORMS.agencies) || {};
+    document.title = L(K.title) + " | e-Irad";
+    var SEP = ' <span class="sep">›</span> ';
+    $("#app").innerHTML = '<div class="wrap page"><nav class="crumbs" aria-label="breadcrumb"><a href="/">e-Irad</a>' + SEP + '<a href="/citizens.html">' + esc(H.t("secCit")) + "</a>" + SEP + "<span>" + esc(L(K.title)) + "</span></nav>" +
+      '<div class="svchead">' + H.icon("doc") + "<div><h1>" + esc(L(K.title)) + "</h1><p>" + esc(L(K.desc)) + '</p><p class="agency"><span>' + esc(H.t("agency")) + ":</span> " + esc(L(K.agency)) + "</p></div></div>" +
+      '<div class="svcgrid"><div><form class="flow" id="fck">' + H.field("ckn", L(K.no), H.inp("ckn", "MIS22-261027-4108P", ' maxlength="24" style="text-transform:uppercase"')) + '<button class="btn" type="submit">' + esc(L(K.btn)) + '</button></form><div id="ckr" class="result" hidden aria-live="polite"></div></div>' +
+      '<aside class="help"><h3>' + esc(L(K.helpH)) + "</h3><ul>" + K.helpL.map(function (x) { return "<li>" + esc(L(x)) + "</li>"; }).join("") + "</ul><p>" + esc(L(K.helpP)) + '</p><p><a href="/applications/">' + esc(L(T.title)) + '</a><br><a href="/appeals/">' + esc(L({ en: "Online reception", ir: "Onlayn kabıl aluu", ru: "Интернет-приёмная" })) + "</a></p></aside></div></div>";
+    function out(html) { var r = $("#ckr"); r.innerHTML = html + (html.indexOf("<b>") >= 0 ? P(K.asOf, "tiny", { d: fmtD(today), h: ("0" + hourNow).slice(-2) }) : ""); r.hidden = false; }
+    function line(q) {
+      var u = String(q || "").toUpperCase().replace(/\s+/g, ""), body, i;
+      if (/^VR/.test(u) && XE && XE.appealStatus) {
+        var r = XE.appealStatus(u);
+        return r.bad ? P(r.bad, "warn") : "<p><b>" + esc(r.no) + "</b></p>" + r.html + '<p class="tiny"><a href="/appeals/#check">' + esc(L(K.appeal)) + "</a></p>";
+      }
+      for (i = 0; i < OTHER.length; i++) if (OTHER[i][0].test(u)) return P(K.other, "warn", { o: L(OTHER[i][1]), u: OTHER[i][2] });
+      if (/^(?!FTE)[A-Z0-9]{2,4}-[A-Z0-9]{2,3}-\d{2}-\d{5}$/.test(u)) return P(K.pre);
+      var a = parse(hash, u, today);
+      if (a === "bad") return P(K.bad, "warn");
+      if (a === "none") return P(K.none, "warn");
+      var corr = corrOf(a.ref), pl = plan(hash, a, corr), seen = upTo(pl, today, hourNow, corr), cur = seen[seen.length - 1], k = cur.k, v = cur.v;
+      body = L(AG[a.sp[2]] || { en: "" });
+      var x, cls = "";
+      if (k === "recv" || k === "fwd") x = L(K.reg, { d: fmtD(a.d0), t: fmtD(pl.term) });
+      else if (k === "ret") { x = L(K.ret, { d: fmtD(cur.d), t: fmtD(v.due) }); cls = "warn"; }
+      else if (k === "closed") { x = L(K.closed, { d: fmtD(cur.d) }); cls = "warn"; }
+      else if (k === "ready") { x = L(K.ready, { b: body, w: v.w, t: fmtD(v.d) }); cls = "ok"; }
+      else if (k === "quota") { x = L(K.refused, { b: body }); cls = "ok"; }
+      else if (k === "dup") { x = L(K.dup, { n: v.n }); cls = "warn"; }
+      else if (k === "gone") { x = L(K.gone, { b: body, t: fmtD(seen.filter(function (e) { return e.k === "ready"; })[0].v.d) }); cls = "warn"; }
+      else x = L(K.cons, { b: body, t: fmtD(pl.term) });
+      return "<p><b>" + esc(a.ref) + "</b></p>" + '<p class="' + cls + '">' + esc(x) + '</p><p class="tiny"><a href="/applications/#follow=' + esc(a.ref) + '">' + esc(L(K.full)) + "</a></p>";
+    }
+    $("#fck").addEventListener("submit", function (e) { e.preventDefault(); if (!H.need("ckn")) return; out(line($("#ckn").value)); });
+    var pre = new URLSearchParams(location.search).get("no");
+    if (pre) { $("#ckn").value = pre; out(line(pre)); }
+  }
+
+  return { spec: spec, note: note, page: page, check: check, _plan: plan, _parse: parse, _upTo: upTo, _makeRef: makeRef, _SPEC: SPEC };
 })();

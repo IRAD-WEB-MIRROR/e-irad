@@ -69,7 +69,7 @@
     x: [["home", "/"], ["forms", "/forms.html"], ["status", "/status.html"], ["faq", "/faq.html"], ["contact", "/contact.html"], ["accessibility", "/accessibility.html"], ["login", "/login.html"]]
   };
   var NAVLBL = { people: "catPeople", pay: "catPay", check: "catCheck", accessibility: "footAcc" };
-  var PAGESEC = { landing: "land", business: "b", procedures: "b", procedure: "b", laws: "b", citizens: "c", login: "c", vote: "c", tests: "c", appeals: "c", applications: "c" };
+  var PAGESEC = { landing: "land", business: "b", procedures: "b", procedure: "b", laws: "b", citizens: "c", login: "c", vote: "c", tests: "c", appeals: "c", applications: "c", appcheck: "c" };
   var CUR = { business: "bhome", citizens: "chome", procedures: "proc", procedure: "proc", laws: "laws", login: "login", status: "status", faq: "faq", forms: "forms", contact: "contact", accessibility: "accessibility", terms: "accessibility" };
   var LANG_ORDER = ["ir", "ru", "en"];
   function secOf(s) { var w = new URLSearchParams(location.search).get("s"); return w && s.sec.indexOf(w) >= 0 ? w : s.sec.charAt(0); }
@@ -2055,7 +2055,7 @@
     document.documentElement.lang = I.htmlLang[LANG];
     chrome();
     if (TITLES[PAGE]) document.title = t(TITLES[PAGE]) + " | e-Irad";
-    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, terms: pageTerms, contact: pageContact, login: pageLogin, vote: XE.vote, tests: XE.tests, appeals: XE.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, langtest: function () { if (window.E_LANGTEST) window.E_LANGTEST(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
+    ({ landing: pageLanding, business: G.business, citizens: pageCitizens, procedures: G.procedures, procedure: G.procedure, laws: G.laws, forms: function () { if (window.E_FORMSPAGE) window.E_FORMSPAGE(); else pageNF(); }, service: pageService, status: pageStatus, faq: pageFAQ, accessibility: pageAcc, terms: pageTerms, contact: pageContact, login: pageLogin, vote: XE.vote, tests: XE.tests, appeals: XE.appeals, applications: function () { if (window.E_APPS) window.E_APPS.page(HX); else pageNF(); }, appcheck: function () { if (window.E_APPS) window.E_APPS.check(HX, XE); else pageNF(); }, census: function () { if (window.E_CENSUS) window.E_CENSUS(HX).page(); else pageNF(); }, langtest: function () { if (window.E_LANGTEST) window.E_LANGTEST(HX).page(); else pageNF(); }, nf: pageNF }[PAGE] || pageNF)();
   }
   render();
 })();
